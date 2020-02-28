@@ -1,4 +1,4 @@
-package com.ximingren.example;
+package com.ximingren.psoExample.full;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,4 @@
-package com.ximingren.pso;
-
-import java.util.Map;
+package com.ximingren.psoExample.person;
 
 /**
  * @ClassName AlgorithmPSO2
