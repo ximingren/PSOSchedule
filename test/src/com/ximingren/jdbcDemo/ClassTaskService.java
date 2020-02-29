@@ -4,10 +4,7 @@ import com.ximingren.CourseSchedule.Bean.po.ClassTask;
 import com.ximingren.CourseSchedule.Bean.vo.ConstantInfo;
 import com.ximingren.jdbcDemo.Particle;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.ximingren.jdbcDemo.ClassTaskJDBC.selectDistinctClassNo;
 
@@ -20,6 +17,7 @@ import static com.ximingren.jdbcDemo.ClassTaskJDBC.selectDistinctClassNo;
 public class ClassTaskService {
     private static final String UNFIXED_TIME = "unFixedTime";//没有固定时间
     private static final String IS_FIXED_TIME = "isFixedTime";//固定时间
+    private static Random generator = new Random();
 
     /**
      * 将从表中查询的开课任务书对象集合进行编码，组成粒子的课程信息维度的数据
@@ -80,6 +78,25 @@ public class ClassTaskService {
         return individualMap;
     }
 
+    //将编码按班级进行分类，形成初始个体（不含教室的初始课表）
+    public static Map<String, List<Particle>> transformSubSpecies(List<Particle> resultGeneList) {
+        Map<String, List<Particle>> individualMap = new HashMap<>();
+        List<String> classNoList = selectDistinctClassNo();
+        for (String classNo : classNoList) {
+            List<Particle> geneList = new ArrayList<>();
+            for (Particle gene : resultGeneList) {
+                if (classNo.equals(ClassSchedulUtil.cutGene(ConstantInfo.CLASS_NO, gene.getLocation().getLoc()[0]))) {
+                    geneList.add(gene);
+                }
+            }
+
+            if (geneList.size() > 1) {
+                individualMap.put(classNo, geneList);
+            }
+        }
+        return individualMap;
+    }
+
     public static List<Particle> codingTime(List<String> geneList) {
         List<Particle> resultGeneList = new ArrayList<>();
         //时间不固定的基因由程序进行随机分配
@@ -91,11 +108,68 @@ public class ClassTaskService {
                 classTime = ClassSchedulUtil.randomTime(gene, resultGeneList);
                 gene = gene.substring(0, 29) + classTime;
             }
-            System.out.println(ClassSchedulUtil.cutGene("classNo", gene) + "  " + classTime);
             Location location = new Location(new String[]{gene, classTime});
             particle.setLocation(location);
             resultGeneList.add(particle);
         }
         return resultGeneList;
     }
+
+    //解决冲突，同一时间一个教师上多门课的冲突
+    public static List<Particle> conflictResolution(List<Particle> resultGeneList) {
+        exit:
+        for (int i = 0; i < resultGeneList.size(); ++i) {
+            String gene = resultGeneList.get(i).getLocation().getLoc()[0];
+            String teacherNo = ClassSchedulUtil.cutGene(ConstantInfo.TEACHER_NO, gene);
+            String classTime = ClassSchedulUtil.cutGene(ConstantInfo.CLASS_TIME, gene);
+            for (int j = i + 1; j < resultGeneList.size(); ++j) {
+                String tempGene = resultGeneList.get(j).getLocation().getLoc()[0];
+                String tempTeacherNo = ClassSchedulUtil.cutGene(ConstantInfo.TEACHER_NO, tempGene);
+                String tempClassTime = ClassSchedulUtil.cutGene(ConstantInfo.CLASS_TIME, tempGene);
+                if (teacherNo.equals(tempTeacherNo) && classTime.equals(tempClassTime)) {
+                    String newClassTime = ClassSchedulUtil.randomTime(gene, resultGeneList);
+                    gene = gene.substring(0, 29) + newClassTime;
+                    continue exit;
+                }
+
+            }
+        }
+        return resultGeneList;
+    }
+
+    //个体间的随机选择两条基因准备进行杂交并生成一个新个体
+    public static List<Particle> selectiveGene(List<Particle> individualList, Particle gBestParticle) {
+        int min = 0;
+        int max = individualList.size() - 1;
+        boolean flag;
+        for (Particle particle : individualList) {
+                //获得当前粒子的位置和粒子历史最优位置
+                String location = particle.getLocation().getLoc()[0];
+                String pBestLocation = particle.getpBestLocation().getLoc()[0];
+                if (!ClassSchedulUtil.cutGene(ConstantInfo.IS_FIX, location).equals("2")) {                //判断选择的两条基因对应的时间值是否固定，如果固定则重新选择两条
+                    //获得他们对应的时间
+                    String secondClassTime = ClassSchedulUtil.cutGene(ConstantInfo.CLASS_TIME, pBestLocation);
+                    //首先是将粒子和历史粒子进行交叉操作
+                    if (generator.nextDouble() > 0.5) {
+                        location = location.substring(0, 29) + secondClassTime;
+                    }
+                    //获得全局最优位置
+                    String gBestLocation = gBestParticle.getLocation().getLoc()[0];
+                    String thirdClassTime = ClassSchedulUtil.cutGene(ConstantInfo.CLASS_TIME, gBestLocation);
+                    //然后是交叉后的粒子和全局最优粒子进行交叉
+                    if(generator.nextDouble()>0.6){
+                        secondClassTime = ClassSchedulUtil.cutGene(ConstantInfo.CLASS_TIME, location);
+                        location = location.substring(0, 29) + thirdClassTime;
+                        gBestLocation = gBestLocation.substring(0, 29) + secondClassTime;
+                    }
+                    //更新粒子位置
+                    particle.setLocation(new Location(new String[]{location, thirdClassTime}));
+                    gBestParticle.setLocation(new Location(new String[]{gBestLocation, secondClassTime}));
+                    //对原有的基因进行移除，然后将交换过时间的两条基因添加进去
+                    flag = true;
+                }
+        }
+        return individualList;
+    }
+
 }
