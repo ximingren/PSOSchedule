@@ -20,7 +20,7 @@ public class ClassTaskJDBC {
     static {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/schedule", "root", "root");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/schedule?useUnicode=true&characterEncoding=utf-8&useSSL=false", "root", "root");
         } catch (Exception e) {
             System.out.println("连接数据库错误" + e);
         }

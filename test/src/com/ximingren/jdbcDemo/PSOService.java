@@ -76,16 +76,32 @@ public class PSOService {
         System.out.println("开始--");
         init();
         int t=0;//已迭代的次数
-        while (t < MAX_ITERATION) {
+        boolean flag=true;
+        while (flag) {
             swarm.clear();
             for (String classNo : subSpeciesPartilesMap.keySet()) {
                     List<Particle> selectiveParticleList = ClassTaskService.selectiveGene(subSpeciesPartilesMap.get(classNo), gBest.get(classNo));
-                    subSpeciesPartilesMap.replace(classNo, selectiveParticleList);
+//                    subSpeciesPartilesMap.replace(classNo, selectiveParticleList);
                     swarm.addAll(selectiveParticleList);
             }
             updateFintnessList();
+            int num=0;
+            for (String classNo : gbestClassMap.keySet()) {
+                List<Double> list = gbestClassMap.get(classNo);
+                if (list.get(list.size() - 1)-list.get(0)>0.1) {
+                    //表示这个子种群有优化
+                    num = num + 1;
+                }
+            }
+            if (num == gbestClassMap.keySet().size()-1) {
+                flag = false;
+            }
+
             t = t + 1;
+            System.out.println(t);
         }
+        System.out.println(t);
+
         for (String classNo : gbestClassMap.keySet()) {
             System.out.println("========="+classNo+"==========");
             List<Double> list = gbestClassMap.get(classNo);
