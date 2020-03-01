@@ -1,12 +1,11 @@
 package com.ximingren.jdbcDemo;
 
 import com.ximingren.CourseSchedule.Bean.po.ClassTask;
+import com.ximingren.CourseSchedule.Bean.po.ClassroomLocation;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName ClassTaskJDBC
@@ -53,21 +52,75 @@ public class ClassTaskJDBC {
         return null;
     }
 
-    public static List<String> selectDistinctClassNo() {
+    public static List<String> selectDistinctName(String name) {
         try {
-            PreparedStatement ps = connection.prepareStatement("select distinct classNo from class_task;");
+            PreparedStatement ps = connection.prepareStatement("select distinct " + name + " from class_task;");
             ResultSet resultSet = ps.executeQuery();
-            List<String> classNo = new ArrayList<>();
+            List<String> result = new ArrayList<>();
             while (resultSet.next()) {
-                classNo.add(resultSet.getString("classNo"));
+                result.add(resultSet.getString(name));
             }
-            return classNo;
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-    public static void main(String[] args) {
-        selectDistinctClassNo();
+
+    public static String selectTeachBuildNo(String name) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("select teachBuildNo from location_info where collegeNo =" + name);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getString("teachBuildNo");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<ClassroomLocation> selectClassRoomLocation(String teachBuildNo) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("select id, teachBuildNo, classroomNo, capacity, classroomAttr from classroom_location where teachBuildNo=" + teachBuildNo);
+            ResultSet resultSet = ps.executeQuery();
+            List<ClassroomLocation> classTaskList = new ArrayList<>();
+            while (resultSet.next()) {
+                ClassroomLocation classroomLocation = new ClassroomLocation();
+                classroomLocation.setId(resultSet.getLong("id"));
+                classroomLocation.setTeachbuildno(resultSet.getString("teachBuildNo"));
+                classroomLocation.setClassroomno(resultSet.getString("classroomNo"));
+                classroomLocation.setCapacity(resultSet.getInt("capacity"));
+                classroomLocation.setClassroomattr(resultSet.getString("classroomAttr"));
+                classTaskList.add(classroomLocation);
+            }
+            return classTaskList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static int selectStudentNumber(String name) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("select studentNumber  from class_info where classNo = " + name
+            );
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getInt("studentNumber");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public static String selectCourseName(String name) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("select id, courseNo, courseName, courseAttr from course_info where courseNo= " + name
+            );
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getString("courseName");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -7,7 +7,14 @@ import java.util.*;
 
 public class ClassSchedulUtil {
 
-    public static String cutGene(String aim, String source) {
+    /**
+     * 划分出编码片段
+     *
+     * @param aim    目标片段
+     * @param source 编码片段
+     * @return 目标编码片段
+     */
+    public static String cutCode(String aim, String source) {
         switch (aim) {
             case ConstantInfo.IS_FIX:
                 return source.substring(0, 1);
@@ -33,13 +40,13 @@ public class ClassSchedulUtil {
     //判断同一个班是否在同一时间内上课有重复
     private static Boolean isTimeRepe(String time, String gene, List<Particle> geneList) {
         //获得班级编号
-        String classNo = cutGene(ConstantInfo.CLASS_NO, gene);
+        String classNo = cutCode(ConstantInfo.CLASS_NO, gene);
         for (Particle particle : geneList) {
-            String str = particle.getLocation().getLoc()[0];
+            String str = particle.getLocation();
             //判断班级编号是否相等
-            if (classNo.equals(cutGene(ConstantInfo.CLASS_NO, str))) {
+            if (classNo.equals(cutCode(ConstantInfo.CLASS_NO, str))) {
                 //班级编号相等的则判断时间是否有重复，没有返回true
-                String classTime = cutGene(ConstantInfo.CLASS_TIME, str);
+                String classTime = cutCode(ConstantInfo.CLASS_TIME, str);
                 if (time.equals(classTime)) {
                     return false;
                 }
@@ -67,8 +74,13 @@ public class ClassSchedulUtil {
         }
     }
 
-    //计算适应度值
-    public static double alculateExpectedValue(Particle particle,List<Particle>particleList) {
+    /***
+     * 计算适应度值,即为计算课程离散程度期望值
+     * @param particle 当前粒子
+     * @param particleList 子种群粒子集合
+     * @return
+     */
+    public static double alculateFitnessValue(Particle particle, List<Particle> particleList) {
         double K1 = 0.3;//专业课所占权重
         double K2 = 0.1;//选修课所占权重
         double K3 = 0.1;//体育课所占权重
@@ -81,23 +93,30 @@ public class ClassSchedulUtil {
         int F5;//课程离散程度期望总值
         double Fx;//适应度值
 
-        String gene = particle.getLocation().getLoc()[0];
-            String courseAttr = cutGene(ConstantInfo.COURSE_ATTR, gene);//获得属性
-            String classTime = cutGene(ConstantInfo.CLASS_TIME, gene);//获得该课程的开课时间
-            if (courseAttr.equals(ConstantInfo.PROFESSIONAL_CODE)) {
-                F1 = F1 + calculateProfessExpect(classTime);
-            } else if (courseAttr.equals(ConstantInfo.ELECTIVE_CODE)) {
-                F2 = F2 + calculateElectiveExpect(classTime);
-            } else if (courseAttr.equals(ConstantInfo.PHYSICAL_CODE)) {
-                F3 = F3 + calculatePhysicalExpect(classTime);
-            } else {
-                F4 = F4 + calculateExperimentExpect(classTime);
-            }
+        String location = particle.getLocation();//粒子位置
+        String courseAttr = cutCode(ConstantInfo.COURSE_ATTR, location);//获得课程属性
+        String classTime = cutCode(ConstantInfo.CLASS_TIME, location);//获得该课程的开课时间
+        if (courseAttr.equals(ConstantInfo.PROFESSIONAL_CODE)) {
+            F1 = F1 + calculateProfessExpect(classTime);
+        } else if (courseAttr.equals(ConstantInfo.ELECTIVE_CODE)) {
+            F2 = F2 + calculateElectiveExpect(classTime);
+        } else if (courseAttr.equals(ConstantInfo.PHYSICAL_CODE)) {
+            F3 = F3 + calculatePhysicalExpect(classTime);
+        } else {
+            F4 = F4 + calculateExperimentExpect(classTime);
+        }
+        //计算课程离散程度
         F5 = calculateDiscreteExpect(particleList);
         Fx = K1 * F1 + K2 * F2 + K3 * F3 + K4 * F4 + K5 * F5;
         return Fx;
     }
-    //计算专业课期望值
+
+
+    /***
+     * 计算专业课期望值
+     * @param classTime 上课时间
+     * @return
+     */
     private static int calculateProfessExpect(String classTime) {
         String[] tenExpectValue = {"01", "06", "11", "16", "21"};//专业课期望值为10时的时间片值
         String[] eightExpectValue = {"02", "07", "12", "17", "22"};//专业课期望值为8时的时间片值
@@ -118,7 +137,11 @@ public class ClassSchedulUtil {
         }
     }
 
-    //计算选修课期望值
+    /***
+     * 计算选修课期望值
+     * @param classTime 上课时间
+     * @return
+     */
     private static int calculateElectiveExpect(String classTime) {
         String[] tenExpectValue = {"03", "08", "13", "18", "23"};//选修期望值为10时的时间片值
         String[] eightExpectValue = {"02", "07", "12", "17", "22"};//选修课期望值为8时的时间片值
@@ -135,7 +158,12 @@ public class ClassSchedulUtil {
             return 0;
         }
     }
-    //计算体育课期望值
+
+    /***
+     * 计算体育课期望值
+     * @param classTime 上课时间
+     * @return
+     */
     private static int calculatePhysicalExpect(String classTime) {
         String[] tenExpectValue = {"04", "09", "14", "19"};//体育课期望值为10时的时间片值
         String[] eightExpectValue = {"03", "08", "13", "18"};//体育课期望值为8时的时间片值
@@ -152,7 +180,12 @@ public class ClassSchedulUtil {
             return 0;
         }
     }
-    //计算实验课期望值
+
+    /***
+     * 计算实验课期望值
+     * @param classTime 上课时间
+     * @return
+     */
     private static int calculateExperimentExpect(String classTime) {
         String[] tenExpectValue = {"04", "09", "14", "19"};//实验课期望值为10时的时间片值
         String[] eightExpectValue = {"05", "10", "15", "20", "25"};//实验课期望值为8时的时间片值
@@ -172,11 +205,19 @@ public class ClassSchedulUtil {
             return 0;
         }
     }
-    //计算课程离散度期望值
-    private static int calculateDiscreteExpect(List<Particle> individualList) {
-        int F5 = 0;//离散程度期望值
-        Map<String, List<String>> classTimeMap = courseGrouping(individualList);
+
+    /***
+     * 计算课程离散度期望值
+     * @param particleList
+     * @return
+     */
+    private static int calculateDiscreteExpect(List<Particle> particleList) {
+        //离散程度期望值
+        int F5 = 0;
+        //对排课粒子根据课程进行分组
+        Map<String, List<String>> classTimeMap = courseGrouping(particleList);
         for (List<String> classTimeList : classTimeMap.values()) {
+            //有两次及以上的排课计划
             if (classTimeList.size() > 1) {
                 for (int i = 0; i < classTimeList.size() - 1; ++i) {
                     int temp = Integer.parseInt(classTimeList.get(++i)) - Integer.parseInt(classTimeList.get(i - 1));
@@ -186,27 +227,28 @@ public class ClassSchedulUtil {
         }
         return F5;
     }
+
     /**
      * 将一个个体（班级课表）的同一门课程的所有上课时间进行一个统计，并且进行一个分组
      *
-     * @param individualList
+     * @param particleList
      * @return
      */
-    private static Map<String, List<String>> courseGrouping(List<Particle> individualList) {
+    private static Map<String, List<String>> courseGrouping(List<Particle> particleList) {
         Map<String, List<String>> classTimeMap = new HashMap<>();
         //先将一个班级课表所上的课程区分出来（排除掉重复的课程）
-        for (Particle particle : individualList) {
-            String gene = particle.getLocation().getLoc()[0];
-            classTimeMap.put(cutGene(ConstantInfo.COURSE_NO, gene), null);
+        for (Particle particle : particleList) {
+            String location = particle.getLocation();
+            classTimeMap.put(cutCode(ConstantInfo.COURSE_NO, location), null);
         }
         //遍历课程
         for (String courseNo : classTimeMap.keySet()) {
             List<String> classTimeList = new ArrayList<>();
-            for (Particle particle : individualList) {
-                String gene = particle.getLocation().getLoc()[0];
+            for (Particle particle : particleList) {
+                String location = particle.getLocation();
                 //获得同一门课程的所有上课时间片
-                if (cutGene(ConstantInfo.COURSE_NO, gene).equals(courseNo)) {
-                    classTimeList.add(cutGene(ConstantInfo.CLASS_TIME, gene));
+                if (cutCode(ConstantInfo.COURSE_NO, location).equals(courseNo)) {
+                    classTimeList.add(cutCode(ConstantInfo.CLASS_TIME, location));
                 }
             }
             //将课程的时间片进行排序
@@ -215,7 +257,13 @@ public class ClassSchedulUtil {
         }
         return classTimeMap;
     }
-    //判断两课时间差在那个区间并返回对于的期望值
+
+
+    /***
+     * 判断两课时间差在那个区间并返回对于的期望值
+     * @param temp
+     * @return
+     */
     private static int judgingDiscreteValues(int temp) {
         int[] tenExpectValue = {5, 6, 7, 8};//期望值为10时两课之间的时间差
         int[] sixExpectValue = {4, 9, 10, 11, 12, 13};//期望值为6时两课之间的时间差
