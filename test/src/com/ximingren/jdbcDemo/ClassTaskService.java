@@ -83,6 +83,8 @@ public class ClassTaskService {
             //放入种群中
             if (particleList.size() > 1) {
                 subSpecicesMap.put(classNo, particleList);
+
+
             }
         }
         return subSpecicesMap;
@@ -141,29 +143,25 @@ public class ClassTaskService {
         return swarmList;
     }
 
-    public static String getNextValue(String value) {
-        int min = 0;
-        int max = 4;
-        String[] tenExpectValue = {"01", "06", "11", "16", "21"};//专业课期望值为10时的时间片值
-        String[] eightExpectValue = {"02", "07", "12", "17", "22"};//专业课期望值为8时的时间片值
-        String[] fourExpectValue = {"03", "08", "13", "18", "23"};//专业课期望值为4时的时间片值
-        String[] twoExpectValue = {"04", "09", "14", "19", "24"};//专业课期望值为2时的时间片值
-        String[] firstExceptValue = {"05", "10", "15", "20", "25"};//专业课期望值为2时的时间片值
-
-        if (ArrayUtils.contains(tenExpectValue, value)) {
-            return tenExpectValue[(ArrayUtils.indexOf(tenExpectValue, value) + (int) (Math.random() * 5)) % 5];
-        } else if (ArrayUtils.contains(eightExpectValue, value)) {
-            return eightExpectValue[(ArrayUtils.indexOf(eightExpectValue, value) + (int) (Math.random() * 5)) % 5];
-        } else if (ArrayUtils.contains(fourExpectValue, value)) {
-            return fourExpectValue[(ArrayUtils.indexOf(fourExpectValue, value) + (int) (Math.random() * 5)) % 5];
-        } else if (ArrayUtils.contains(twoExpectValue, value)) {
-            return twoExpectValue[(ArrayUtils.indexOf(twoExpectValue, value) + (int) (Math.random() * 5)) % 5];
-        } else {
-            return firstExceptValue[(ArrayUtils.indexOf(firstExceptValue, value) + (int) (Math.random() * 5)) % 5];
+    public static String getNextValue(String location) {
+        String courseAttr = ClassSchedulUtil.cutCode(ConstantInfo.COURSE_ATTR, location);//获得课程属性
+        String classTime = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, location);//上课时间
+        String[][] values = null;
+        if (courseAttr.equals(ConstantInfo.PROFESSIONAL_CODE)) {
+            //专业课
+            values = ConstantInfo.PROPESSIONAL_VALUE;
+        } else if (courseAttr.equals(ConstantInfo.ELECTIVE_CODE)) {
+            //选修课
+            values = ConstantInfo.ELECTIVE_VALUE;
+        } else if (courseAttr.equals(ConstantInfo.PHYSICAL_CODE)) {
+            //体育课
+            values = ConstantInfo.PHYSICAL_VALUE;
+        } else  {
+            //实验课
+            values = ConstantInfo.EXPERIMENT_VALUE;;
         }
+        return ClassSchedulUtil.getRandomValue(values, classTime);
     }
-    //个体间的随机选择两条基因准备进行杂交并生成一个新个体
-
     /**
      * 运用遗传算法中的交叉操作来解决离散粒子群位置更新，即在一定概率下进行两两粒子的交叉操作
      *
@@ -181,31 +179,32 @@ public class ClassTaskService {
             for (Particle particle : individualList) {
                 //获得当前粒子的位置和粒子历史最优位置
                 String location = particle.getLocation();
+//                //获取个体最优解位置
                 String pBestLocation = particle.getpBestLocation();
-                //如果排课粒子时间不是固定的
-                if (!ClassSchedulUtil.cutCode(ConstantInfo.IS_FIX, location).equals("2")) {
-                    //获得他们对应的时间
-                    String firstClassTime = getNextValue(ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, location));
-                    String secondClassTime = getNextValue(ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, pBestLocation));
-                    //首先是将粒子和个体历史最优解粒子进行交叉操作
-                    if (generator.nextDouble() > 0.8) {
-                        location = location.substring(0, 29) + secondClassTime;
-                        pBestLocation = pBestLocation.substring(0, 29) + firstClassTime;
-                        particle.setpBestLocationForce(particle.getpBestValue(), pBestLocation);
-                    }
-                    //获得全局最优位置
-                    String gBestLocation = gBestParticle.getLocation();
-                    String thirdClassTime = getNextValue(ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, gBestLocation));
+//                //获得全局最优位置
+                String gBestLocation = gBestParticle.getLocation();
+//                //如果排课粒子时间不是固定的
+                if (ClassSchedulUtil.cutCode(ConstantInfo.IS_FIX, location).equals("1")) {
+//                    //获得他们对应的时间
+                    String firstClassTime = getNextValue(location);
+                    String secondClassTime = getNextValue(pBestLocation);
+                    String thirdClassTime = getNextValue(gBestLocation);
+//                    //首先是将粒子和个体历史最优解粒子进行交叉操作
+//                    if (generator.nextDouble() >0.6) {
+//                        location = location.substring(0, 29) + secondClassTime;
+//                        pBestLocation = pBestLocation.substring(0, 29) + firstClassTime;
+//                        particle.setpBestLocationForce(particle.getpBestValue(), pBestLocation);
+//                    }
                     //然后是交叉后的粒子和全局最优粒子进行交叉
-                    if (generator.nextDouble() > 0.8) {
-                        secondClassTime = getNextValue(ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, location));
+                    if (generator.nextDouble() > 0.5) {
+                        secondClassTime = getNextValue(location);
                         location = location.substring(0, 29) + thirdClassTime;
                         gBestLocation = gBestLocation.substring(0, 29) + secondClassTime;
                     }
-                    //更新粒子位置
-                    particle.setLocation(location);
-                    gBestParticle.setLocation(gBestLocation);
                 }
+//                更新粒子位置
+                particle.setLocation(location);
+                gBestParticle.setLocation(gBestLocation);
             }
             swarmList.addAll(individualList);
         }
@@ -241,7 +240,7 @@ public class ClassTaskService {
     }
 
     /**
-     * 分配教师
+     * 分配教室
      *
      * @param location              粒子编码，即粒子位置信息
      * @param classroomLocationList 该教学楼的所有教师

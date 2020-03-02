@@ -15,6 +15,7 @@ import java.util.Map;
 public class DrawScheduleTable {
     private static Map<String, String> scheduleTable = new HashMap<>();
     public static void draw(List<Particle> particleList) {
+        scheduleTable.clear();
         for (Particle particle : particleList) {
             String  location = particle.getLocation();
             String classTime = ClassSchedulUtil.cutCode("classTime", location);

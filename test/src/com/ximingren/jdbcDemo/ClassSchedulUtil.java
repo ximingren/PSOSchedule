@@ -111,30 +111,34 @@ public class ClassSchedulUtil {
         return Fx;
     }
 
-
+    public static int getClassTimeIndex(String[][] expectValue,int [] value, String classTime) {
+        for (int i = 0; i < value.length; i++) {
+            String[] values = expectValue[i];
+            if (ArrayUtils.indexOf(values, classTime) != -1) {
+                return value[i];
+            }
+        }
+        return 0;
+    }
+    public static String getRandomValue(String[][] expectValue, String classTime) {
+        String nextValue = null;
+        for (String[] values :expectValue) {
+            if (ArrayUtils.indexOf(values, classTime) != -1) {
+                int size = values.length;
+                nextValue = values[(ArrayUtils.indexOf(values, classTime) + (int) (Math.random() * size))% size];
+            }
+        }
+        return nextValue;
+    }
     /***
      * 计算专业课期望值
      * @param classTime 上课时间
      * @return
      */
     private static int calculateProfessExpect(String classTime) {
-        String[] tenExpectValue = {"01", "06", "11", "16", "21"};//专业课期望值为10时的时间片值
-        String[] eightExpectValue = {"02", "07", "12", "17", "22"};//专业课期望值为8时的时间片值
-        String[] fourExpectValue = {"03", "08", "13", "18", "23"};//专业课期望值为4时的时间片值
-        String[] twoExpectValue = {"04", "09", "14", "19", "24"};//专业课期望值为2时的时间片值
-        //String [] zeroExpectValue = {"05","10","15","20","25"};//专业课期望值为0时的时间片值
-
-        if (ArrayUtils.contains(tenExpectValue, classTime)) {
-            return 10;
-        } else if (ArrayUtils.contains(eightExpectValue, classTime)) {
-            return 8;
-        } else if (ArrayUtils.contains(fourExpectValue, classTime)) {
-            return 4;
-        } else if (ArrayUtils.contains(twoExpectValue, classTime)) {
-            return 2;
-        } else {
-            return 0;
-        }
+        String[][] expectValue = ConstantInfo.PROPESSIONAL_VALUE;
+        int[] value = new int[]{10, 8, 4, 2, 0};
+        return getClassTimeIndex(expectValue,value,classTime);
     }
 
     /***
@@ -143,20 +147,9 @@ public class ClassSchedulUtil {
      * @return
      */
     private static int calculateElectiveExpect(String classTime) {
-        String[] tenExpectValue = {"03", "08", "13", "18", "23"};//选修期望值为10时的时间片值
-        String[] eightExpectValue = {"02", "07", "12", "17", "22"};//选修课期望值为8时的时间片值
-        String[] fourExpectValue = {"01", "04", "06", "09", "11", "16", "19", "21", "24"};//选修课期望值为4时的时间片值
-        //String [] zeroExpectValue = {"05","10","15","20","25"};//选修课期望值为0时的时间片值
-
-        if (ArrayUtils.contains(tenExpectValue, classTime)) {
-            return 10;
-        } else if (ArrayUtils.contains(eightExpectValue, classTime)) {
-            return 8;
-        } else if (ArrayUtils.contains(fourExpectValue, classTime)) {
-            return 4;
-        } else {
-            return 0;
-        }
+        String[][] expectValue = ConstantInfo.ELECTIVE_VALUE;
+        int [] value = new int[]{10, 8, 4, 0};
+        return getClassTimeIndex(expectValue,value,classTime);
     }
 
     /***
@@ -165,20 +158,10 @@ public class ClassSchedulUtil {
      * @return
      */
     private static int calculatePhysicalExpect(String classTime) {
-        String[] tenExpectValue = {"04", "09", "14", "19"};//体育课期望值为10时的时间片值
-        String[] eightExpectValue = {"03", "08", "13", "18"};//体育课期望值为8时的时间片值
-        String[] fourExpectValue = {"02", "07", "12", "17", "22"};//体育课期望值为4时的时间片值
-        //String [] zeroExpectValue = {"01","05","06","10","11","15","16","20","21","23","24","25"};//体育课期望值为0时的时间片值
+        String[][] expectValue = ConstantInfo.PHYSICAL_VALUE;
+        int [] value = new int[]{10, 8, 4, 0};
+        return getClassTimeIndex(expectValue,value,classTime);
 
-        if (ArrayUtils.contains(tenExpectValue, classTime)) {
-            return 10;
-        } else if (ArrayUtils.contains(eightExpectValue, classTime)) {
-            return 8;
-        } else if (ArrayUtils.contains(fourExpectValue, classTime)) {
-            return 4;
-        } else {
-            return 0;
-        }
     }
 
     /***
@@ -187,23 +170,9 @@ public class ClassSchedulUtil {
      * @return
      */
     private static int calculateExperimentExpect(String classTime) {
-        String[] tenExpectValue = {"04", "09", "14", "19"};//实验课期望值为10时的时间片值
-        String[] eightExpectValue = {"05", "10", "15", "20", "25"};//实验课期望值为8时的时间片值
-        String[] sixExpectValue = {"03", "08", "13", "18"};//实验课期望值为6时的时间片值
-        String[] fourExpectValue = {"02", "07", "12", "17", "22"};//实验课期望值为4时的时间片值
-        //String [] zeroExpectValue = {"01","06","11","16","21","23","24","25"};//实验课期望值为0时的时间片值
-
-        if (ArrayUtils.contains(tenExpectValue, classTime)) {
-            return 10;
-        } else if (ArrayUtils.contains(eightExpectValue, classTime)) {
-            return 8;
-        } else if (ArrayUtils.contains(sixExpectValue, classTime)) {
-            return 6;
-        } else if (ArrayUtils.contains(fourExpectValue, classTime)) {
-            return 4;
-        } else {
-            return 0;
-        }
+        String[][] expectValue = ConstantInfo.EXPERIMENT_VALUE;
+        int [] value = new int[]{10, 8, 6,4, 0};
+        return getClassTimeIndex(expectValue,value,classTime);
     }
 
     /***
@@ -282,6 +251,4 @@ public class ClassSchedulUtil {
             return 0;
         }
     }
-
-
 }

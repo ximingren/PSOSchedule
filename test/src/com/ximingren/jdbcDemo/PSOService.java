@@ -66,8 +66,10 @@ public class PSOService {
         subSpeciesPartilesMap = ClassTaskService.transformSubSpecies(noConflictParticleList);
         for (String classNo : subSpeciesPartilesMap.keySet()) {
             double allFitnessValue = 0.0;
-            //第一次，最优解粒子默认为第一个粒子
-            gBestParticle.put(classNo, subSpeciesPartilesMap.get(classNo).get(0));
+            if (!gBestParticle.keySet().contains(classNo)) {
+                //第一次，最优解粒子默认为第一个粒子
+                gBestParticle.put(classNo, subSpeciesPartilesMap.get(classNo).get(0));
+            }
             //对子种群的每个粒子进行适应度计算，来跟最优解粒子进行比较
             for (Particle particle : subSpeciesPartilesMap.get(classNo)) {
                 //计算适应度
@@ -122,7 +124,6 @@ public class PSOService {
      */
     public void execute() {
         System.out.println("==========开始==========");
-        //清空变量
 
         //初始化
         init();
@@ -131,43 +132,49 @@ public class PSOService {
         //是否到达结束标准
         boolean flag = true;
         while (flag) {
-            //每次迭代都要清空总种群集合，方便后续添加进更新后的新粒子来进行检测冲突
-            swarm.clear();
             //更新粒子位置
             swarm = ClassTaskService.selectiveGene(subSpeciesPartilesMap, gBestParticle);
             //所有的子种群粒子位置更新完成，进行更新适应度
             updateFintnessList();
             flag = judgeErr();
             t = t + 1;
+            if (t == 100) {
+                flag = false;
+            }
             if (t > 5000) {
+                //清空变量
                 gbestFitnessValueMap.clear();
                 gBestParticle.clear();
                 swarm.clear();
                 subSpeciesPartilesMap.clear();
                 System.out.println("重新初始化");
-                execute();
+                init();
+                t = 0;
             }
-//            System.out.println(t);
         }
-        swarm = ClassTaskService.finalResult(swarm);
-        subSpeciesPartilesMap = ClassTaskService.transformSubSpecies(swarm);
+        //分配教室
+//        swarm = ClassTaskService.finalResult(swarm);
+//        //分配好时间和教师的总种群集合
+//        subSpeciesPartilesMap = ClassTaskService.transformSubSpecies(swarm);
+        showBeforeAndAfterTable(flag);
+        System.out.println("迭代次数： " + t);
+
+    }
+
+    public  void showBeforeAndAfterTable(boolean flag) {
         if (!flag) {
-            System.out.println("迭代次数： " + t);
             for (String classNo : gbestFitnessValueMap.keySet()) {
+                System.out.println("init");
                 DrawScheduleTable.draw(initSubSpeciesMap.get(classNo));
+                System.out.println("after");
                 DrawScheduleTable.draw(subSpeciesPartilesMap.get(classNo));
                 System.out.println("=========" + classNo + "==========");
                 List<Double> list = gbestFitnessValueMap.get(classNo);
-//            for (Double d : list) {
-//                System.out.print(d+" ");
-//            }
                 System.out.println(list.get(0) + " " + list.get(list.size() - 1));
                 System.out.println("\n");
             }
         }
-        System.exit(0);
     }
-
     public static void main(String[] args) {
         PSOService psoService = new PSOService();
         psoService.execute();
