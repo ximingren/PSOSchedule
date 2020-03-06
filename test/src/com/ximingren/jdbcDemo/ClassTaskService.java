@@ -27,9 +27,7 @@ public class ClassTaskService {
      * @return List<Particle> 所有排课粒子
      */
     public static List<Particle> coding(List<ClassTask> classTaskList) {
-        List<Particle> particleList = new ArrayList<>();
-        List<Particle> unFixedTimeParticleList = new ArrayList<>();//不固定时间的编码粒子组
-        List<Particle> isFixedTimeParticleList = new ArrayList<>();//固定时间的编码粒子组
+        List<Particle> particleList = new ArrayList<>();//存放编码后的排课粒子
         for (ClassTask classTask : classTaskList) {
             //根据isFix的值判断是否固定，为1则不固定classTime默认填充”00“
             if (classTask.getIsfix().equals("1")) {
@@ -39,7 +37,7 @@ public class ClassTaskService {
                     String particleLocation = classTask.getIsfix() + classTask.getCollegeno() + classTask.getClassno() + classTask.getTeacherno() + classTask.getCourseno() + classTask.getCourseattr() + "00";
                     //确定了粒子的位置后添加进粒子列表中
                     Particle particle = new Particle(particleLocation);
-                    unFixedTimeParticleList.add(particle);
+                    particleList.add(particle);
                 }
             }
             //isFix的值为2则classTime有值，需要对classTime的值进行切割
@@ -51,13 +49,10 @@ public class ClassTaskService {
                     //确定了粒子的位置后添加进粒子列表中
                     String particleLocation = classTask.getIsfix() + classTask.getCollegeno() + classTask.getClassno() + classTask.getTeacherno() + classTask.getCourseno() + classTask.getCourseattr() + classTime;
                     Particle particle = new Particle(particleLocation);
-                    isFixedTimeParticleList.add(particle);
+                    particleList.add(particle);
                 }
             }
         }
-        //划分为固定时间和非固定时间的
-        particleList.addAll(unFixedTimeParticleList);
-        particleList.addAll(isFixedTimeParticleList);
         return particleList;
     }
 
@@ -83,8 +78,6 @@ public class ClassTaskService {
             //放入种群中
             if (particleList.size() > 1) {
                 subSpecicesMap.put(classNo, particleList);
-
-
             }
         }
         return subSpecicesMap;
@@ -99,6 +92,7 @@ public class ClassTaskService {
     public static List<Particle> allocatTime(List<Particle> particleList) {
         List<Particle> initParticleList = new ArrayList<>();
         for (Particle particle : particleList) {
+            //粒子位置
             String location = particle.getLocation();
             //获得排课时间
             String classTime = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, location);
@@ -123,7 +117,8 @@ public class ClassTaskService {
     public static List<Particle> conflictResolution(List<Particle> swarmList) {
         exit:
         for (int i = 0; i < swarmList.size(); ++i) {
-            String location = swarmList.get(i).getLocation();//粒子编码，也就是粒子位置
+            Particle particle = swarmList.get(i);
+            String location = particle.getLocation();//粒子编码，也就是粒子位置
             String teacherNo = ClassSchedulUtil.cutCode(ConstantInfo.TEACHER_NO, location);//教师编号
             String classTime = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, location);//上课时间
             for (int j = i + 1; j < swarmList.size(); ++j) {
@@ -135,6 +130,7 @@ public class ClassTaskService {
                     //更新冲突的粒子的位置
                     String newClassTime = ClassSchedulUtil.randomTime(location, swarmList);
                     location = location.substring(0, 29) + newClassTime;
+                    particle.setLocation(location);
                     continue exit;
                 }
 
@@ -143,9 +139,16 @@ public class ClassTaskService {
         return swarmList;
     }
 
-    public static String getNextValue(String location) {
-        String courseAttr = ClassSchedulUtil.cutCode(ConstantInfo.COURSE_ATTR, location);//获得课程属性
-        String classTime = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, location);//上课时间
+    /**
+     * 进行交换的两个粒子
+     * @param firstLocation 第一个粒子,用于检测是否时间有冲突
+     * @param secondLocation 第二个粒子
+     * @param swarm 总粒子集合
+     * @return
+     */
+    public static String getNextValue(String firstLocation,String secondLocation,List<Particle>swarm) {
+        String courseAttr = ClassSchedulUtil.cutCode(ConstantInfo.COURSE_ATTR, secondLocation);//获得课程属性
+        String classTime = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, secondLocation);//上课时间
         String[][] values = null;
         if (courseAttr.equals(ConstantInfo.PROFESSIONAL_CODE)) {
             //专业课
@@ -160,7 +163,7 @@ public class ClassTaskService {
             //实验课
             values = ConstantInfo.EXPERIMENT_VALUE;;
         }
-        return ClassSchedulUtil.getRandomValue(values, classTime);
+        return ClassSchedulUtil.updateRandomValue(values, classTime,firstLocation,swarm,0);
     }
     /**
      * 运用遗传算法中的交叉操作来解决离散粒子群位置更新，即在一定概率下进行两两粒子的交叉操作
@@ -169,8 +172,8 @@ public class ClassTaskService {
      * @param gBestParticleMap
      * @return
      */
-    public static List<Particle> selectiveGene(Map<String, List<Particle>> subSpeciesPartilesMap, Map<String, Particle> gBestParticleMap) {
-        List<Particle> swarmList = new ArrayList<>();
+    public static void selectiveParticle(Map<String, List<Particle>> subSpeciesPartilesMap, Map<String, Particle> gBestParticleMap,List<Particle>swarm) {
+//        List<Particle> swarmList = new ArrayList<>();
         //对每个子种群进行独立操作
         for (String classNo : subSpeciesPartilesMap.keySet()) {
             List<Particle> individualList = subSpeciesPartilesMap.get(classNo);
@@ -179,6 +182,7 @@ public class ClassTaskService {
             for (Particle particle : individualList) {
                 //获得当前粒子的位置和粒子历史最优位置
                 String location = particle.getLocation();
+                System.out.println(location);
 //                //获取个体最优解位置
                 String pBestLocation = particle.getpBestLocation();
 //                //获得全局最优位置
@@ -186,29 +190,38 @@ public class ClassTaskService {
 //                //如果排课粒子时间不是固定的
                 if (ClassSchedulUtil.cutCode(ConstantInfo.IS_FIX, location).equals("1")) {
 //                    //获得他们对应的时间
-                    String firstClassTime = getNextValue(location);
-                    String secondClassTime = getNextValue(pBestLocation);
-                    String thirdClassTime = getNextValue(gBestLocation);
+                    String firstTemp =ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME,location);
+                    String secondTemp =ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME,pBestLocation);
+                    String thirdTemp =ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME,gBestLocation);
+//                    String thirdClassTime = getNextValue(gBestLocation,swarm);
+//                    String thirdClassTime = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, gBestLocation);
 //                    //首先是将粒子和个体历史最优解粒子进行交叉操作
-//                    if (generator.nextDouble() >0.6) {
-//                        location = location.substring(0, 29) + secondClassTime;
-//                        pBestLocation = pBestLocation.substring(0, 29) + firstClassTime;
-//                        particle.setpBestLocationForce(particle.getpBestValue(), pBestLocation);
-//                    }
-                    //然后是交叉后的粒子和全局最优粒子进行交叉
-                    if (generator.nextDouble() > 0.5) {
-                        secondClassTime = getNextValue(location);
-                        location = location.substring(0, 29) + thirdClassTime;
-                        gBestLocation = gBestLocation.substring(0, 29) + secondClassTime;
+                    if (generator.nextDouble() >PSOConstants.C1) {
+                        String temp = location;
+                        location = location.substring(0, 29) + getNextValue(location,pBestLocation,swarm);
+//                        location = location.substring(0, 29) + secondTemp;
+//                        pBestLocation = pBestLocation.substring(0, 29) + getNextValue(pBestLocation,temp,swarm);
+                        pBestLocation = pBestLocation.substring(0, 29) + firstTemp;
+                        particle.setpBestLocationForce(particle.getpBestValue(), pBestLocation);
+                        particle.setLocation(location);
+                    }
+//                    然后是交叉后的粒子和全局最优粒子进行交叉
+                    if (generator.nextDouble() > PSOConstants.C2) {
+                        String temp = location;
+                        secondTemp =ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME,location);
+//                        location = location.substring(0, 29) +thirdTemp;
+                        location = location.substring(0, 29) +getNextValue(location,gBestLocation,swarm);
+//                        gBestLocation = gBestLocation.substring(0, 29) + getNextValue(gBestLocation,temp,swarm);
+                        gBestLocation = gBestLocation.substring(0, 29) + secondTemp;
+                        particle.setLocation(location);
+                        gBestParticle.setLocation(gBestLocation);
                     }
                 }
-//                更新粒子位置
-                particle.setLocation(location);
-                gBestParticle.setLocation(gBestLocation);
+
             }
-            swarmList.addAll(individualList);
+//            swarmList.addAll(individualList);
         }
-        return swarmList;
+//        return swarmList;
     }
 
     /**
@@ -218,10 +231,10 @@ public class ClassTaskService {
      * @return
      */
     public static List<Particle> finalResult(List<Particle> allParticleMap) {
-        List<Particle> resultList = new ArrayList<>();//用来存放结果（加上教室编号的基因）
+        List<Particle> resultList = new ArrayList<>();//用来存放结果（加上教室编号的粒子）
         String classroomNo;//教室编号
         List<String> collegeNoList = ClassTaskJDBC.selectDistinctName(ConstantInfo.COLLEGE_NO);//学院编号集合
-        Map<String, List<Particle>> map = geneByCollege(allParticleMap, collegeNoList);//将粒子按学院分配
+        Map<String, List<Particle>> map = particleByCollege(allParticleMap, collegeNoList);//将粒子按学院分配
         for (String collegeNo : map.keySet()) {
             String teachBuildNo = ClassTaskJDBC.selectTeachBuildNo(collegeNo);//根据教务处划分的教学区域，查询学院对应的教学楼编号
             //根据教学楼编号查询出该教学楼下所有的教室来进行随机分配
@@ -243,8 +256,8 @@ public class ClassTaskService {
      * 分配教室
      *
      * @param location              粒子编码，即粒子位置信息
-     * @param classroomLocationList 该教学楼的所有教师
-     * @param resultList
+     * @param classroomLocationList 该教学楼的所有教室
+     * @param resultList 结果粒子集合
      * @return
      */
     public static String assignClassroom(String location, List<ClassroomLocation> classroomLocationList, List<Particle> resultList) {
@@ -351,7 +364,7 @@ public class ClassTaskService {
      * @param collegeNoList
      * @return
      */
-    private static Map<String, List<Particle>> geneByCollege(List<Particle> resultGeneList, List<String> collegeNoList) {
+    private static Map<String, List<Particle>> particleByCollege(List<Particle> resultGeneList, List<String> collegeNoList) {
         Map<String, List<Particle>> map = new HashMap<>();
         for (String collegeNo : collegeNoList) {
             List<Particle> particleList = new ArrayList<>();

@@ -61,4 +61,9 @@ public class Particle {
     public double getpBestValue() {
         return this.pBestValue;
     }
+
+    public static void main(String[] args) {
+        String[][] s = new String[][]{{"12"}, {"32"}};
+        System.out.println(s.length);
+    }
 }

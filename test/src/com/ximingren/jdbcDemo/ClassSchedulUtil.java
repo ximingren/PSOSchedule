@@ -38,10 +38,10 @@ public class ClassSchedulUtil {
     }
 
     //判断同一个班是否在同一时间内上课有重复
-    private static Boolean isTimeRepe(String time, String gene, List<Particle> geneList) {
+    private static Boolean isTimeNoRepe(String time, String location, List<Particle> particleList) {
         //获得班级编号
-        String classNo = cutCode(ConstantInfo.CLASS_NO, gene);
-        for (Particle particle : geneList) {
+        String classNo = cutCode(ConstantInfo.CLASS_NO, location);
+        for (Particle particle : particleList) {
             String str = particle.getLocation();
             //判断班级编号是否相等
             if (classNo.equals(cutCode(ConstantInfo.CLASS_NO, str))) {
@@ -56,7 +56,7 @@ public class ClassSchedulUtil {
     }
 
     //随机生成时间片
-    public static String randomTime(String gene, List<Particle> geneList) {
+    public static String randomTime(String location, List<Particle> particleList) {
         int min = 1;
         int max = 25;
         String time;
@@ -67,10 +67,10 @@ public class ClassSchedulUtil {
         } else {
             time = "" + temp;
         }
-        if (isTimeRepe(time, gene, geneList)) {
+        if (isTimeNoRepe(time, location, particleList)) {
             return time;
         } else {
-            return randomTime(gene, geneList);
+            return randomTime(location, particleList);
         }
     }
 
@@ -111,21 +111,38 @@ public class ClassSchedulUtil {
         return Fx;
     }
 
-    public static int getClassTimeIndex(String[][] expectValue,int [] value, String classTime) {
-        for (int i = 0; i < value.length; i++) {
-            String[] values = expectValue[i];
+    /**
+     * 根据上课时间确定课程在哪个级别，根据此级别返回对应的期望值
+     * @param courseValue 课程时间列表
+     * @param expectValueList 期望值列表
+     * @param classTime 上课时间
+     * @return
+     */
+    public static int getClassTimeIndex(String[][] courseValue,int [] expectValueList, String classTime) {
+        for (int i = 0; i < expectValueList.length; i++) {
+            String[] values = courseValue[i];
             if (ArrayUtils.indexOf(values, classTime) != -1) {
-                return value[i];
+                return expectValueList[i];
             }
         }
         return 0;
     }
-    public static String getRandomValue(String[][] expectValue, String classTime) {
+    public static String updateRandomValue(String [][] expectValue,String classTime,String firstLocation,List<Particle>swarm,int iterNum) {
         String nextValue = null;
         for (String[] values :expectValue) {
-            if (ArrayUtils.indexOf(values, classTime) != -1) {
+            int index = ArrayUtils.indexOf(values, classTime);
+            if (index != -1) {
+                if (iterNum>=10) {
+                    values=expectValue[iterNum%expectValue.length];
+                }
                 int size = values.length;
-                nextValue = values[(ArrayUtils.indexOf(values, classTime) + (int) (Math.random() * size))% size];
+                String nextClassTime = values[(int) (Math.random() * size)];
+                if (isTimeNoRepe(nextClassTime, firstLocation, swarm)) {
+                    return nextClassTime;
+                } else {
+                    iterNum = iterNum + 1;
+                    return updateRandomValue(expectValue, classTime, firstLocation, swarm,iterNum);
+                }
             }
         }
         return nextValue;
@@ -136,9 +153,9 @@ public class ClassSchedulUtil {
      * @return
      */
     private static int calculateProfessExpect(String classTime) {
-        String[][] expectValue = ConstantInfo.PROPESSIONAL_VALUE;
-        int[] value = new int[]{10, 8, 4, 2, 0};
-        return getClassTimeIndex(expectValue,value,classTime);
+        String[][] courseValue = ConstantInfo.PROPESSIONAL_VALUE;//课程时间分类列表
+        int[] expectValueList = new int[]{10, 8, 4, 2, 0};//课程期望值数组
+        return getClassTimeIndex(courseValue,expectValueList,classTime);
     }
 
     /***
@@ -147,9 +164,9 @@ public class ClassSchedulUtil {
      * @return
      */
     private static int calculateElectiveExpect(String classTime) {
-        String[][] expectValue = ConstantInfo.ELECTIVE_VALUE;
-        int [] value = new int[]{10, 8, 4, 0};
-        return getClassTimeIndex(expectValue,value,classTime);
+        String[][] courseValue = ConstantInfo.ELECTIVE_VALUE;
+        int [] expectValueList = new int[]{10, 8, 4, 0};
+        return getClassTimeIndex(courseValue,expectValueList,classTime);
     }
 
     /***
@@ -158,9 +175,9 @@ public class ClassSchedulUtil {
      * @return
      */
     private static int calculatePhysicalExpect(String classTime) {
-        String[][] expectValue = ConstantInfo.PHYSICAL_VALUE;
-        int [] value = new int[]{10, 8, 4, 0};
-        return getClassTimeIndex(expectValue,value,classTime);
+        String[][] courseValue = ConstantInfo.PHYSICAL_VALUE;
+        int [] expectValueList = new int[]{10, 8, 4, 0};
+        return getClassTimeIndex(courseValue,expectValueList,classTime);
 
     }
 
@@ -170,9 +187,9 @@ public class ClassSchedulUtil {
      * @return
      */
     private static int calculateExperimentExpect(String classTime) {
-        String[][] expectValue = ConstantInfo.EXPERIMENT_VALUE;
-        int [] value = new int[]{10, 8, 6,4, 0};
-        return getClassTimeIndex(expectValue,value,classTime);
+        String[][] courseValue = ConstantInfo.EXPERIMENT_VALUE;
+        int [] expectValueList = new int[]{10, 8, 6,4, 0};
+        return getClassTimeIndex(courseValue,expectValueList,classTime);
     }
 
     /***
@@ -239,6 +256,7 @@ public class ClassSchedulUtil {
         int[] fourExpectValue = {3, 14, 15, 16, 17, 18};//期望值为4时两课之间的时间差
         int[] twoExpectValue = {2, 19, 20, 21, 22, 23};//期望值为2时两课之间的时间差
         //int [] zeroExpectValue = {1,24};//期望值为0时两课之间的时间差
+
         if (ArrayUtils.contains(tenExpectValue, temp)) {
             return 10;
         } else if (ArrayUtils.contains(sixExpectValue, temp)) {

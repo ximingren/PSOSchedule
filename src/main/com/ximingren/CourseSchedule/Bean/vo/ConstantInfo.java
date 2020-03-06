@@ -39,7 +39,7 @@ public class ConstantInfo {
     public static final String[][] ELECTIVE_VALUE = new String[][]{
             {"03", "08", "13", "18", "23"},
             {"02", "07", "12", "17", "22"},
-            {"01", "04", "14","06", "09", "11", "16", "19", "21", "24"},
+            {"01", "04", "06", "09", "11", "14","16", "19", "21", "24"},
             {"05", "10", "15", "20", "25"}
     };//选修课期望值
     public static final String[][] PHYSICAL_VALUE = new String[][]{
