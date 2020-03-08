@@ -1,4 +1,4 @@
-package com.ximingren.jdbcDemo;
+package com.ximingren.scheduleDemo;
 
 import com.ximingren.CourseSchedule.Bean.vo.ConstantInfo;
 

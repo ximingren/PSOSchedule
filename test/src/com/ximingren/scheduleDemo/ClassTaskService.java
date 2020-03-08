@@ -1,10 +1,8 @@
-package com.ximingren.jdbcDemo;
+package com.ximingren.scheduleDemo;
 
 import com.ximingren.CourseSchedule.Bean.po.ClassTask;
 import com.ximingren.CourseSchedule.Bean.po.ClassroomLocation;
 import com.ximingren.CourseSchedule.Bean.vo.ConstantInfo;
-import com.ximingren.jdbcDemo.Particle;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 
@@ -182,7 +180,6 @@ public class ClassTaskService {
             for (Particle particle : individualList) {
                 //获得当前粒子的位置和粒子历史最优位置
                 String location = particle.getLocation();
-                System.out.println(location);
 //                //获取个体最优解位置
                 String pBestLocation = particle.getpBestLocation();
 //                //获得全局最优位置
@@ -215,6 +212,18 @@ public class ClassTaskService {
                         gBestLocation = gBestLocation.substring(0, 29) + secondTemp;
                         particle.setLocation(location);
                         gBestParticle.setLocation(gBestLocation);
+                    }
+                    if (generator.nextDouble() > 0.6) {
+                        int min = 0;
+                        int max = individualList.size() - 1;
+                        int firstIndex = min + (int) (Math.random() * (max + 1 - min));//选取第一个随机数
+                        int secondIndex = min + (int) (Math.random() * (max + 1 - min));//选取第二个随机数
+                        Particle particle1 = individualList.get(firstIndex);
+                        Particle particle2 = individualList.get(secondIndex);
+                        String location1 = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, particle1.getLocation());
+                        String location2 = ClassSchedulUtil.cutCode(ConstantInfo.CLASS_TIME, particle2.getLocation());
+                        particle1.setLocation(particle1.getLocation().substring(0,29)+location2);
+                        particle2.setLocation(particle2.getLocation().substring(0,29)+location1);
                     }
                 }
 

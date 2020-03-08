@@ -1,4 +1,4 @@
-package com.ximingren.jdbcDemo;
+package com.ximingren.scheduleDemo;
 
 /**
  * @ClassName Particle

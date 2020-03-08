@@ -1,4 +1,4 @@
-package com.ximingren.jdbcDemo;
+package com.ximingren.scheduleDemo;
 
 /**
  * @ClassName PSOConstants
@@ -14,5 +14,8 @@ public interface PSOConstants {
     double C2=0.8;//概率因子C2
     double W_UPPERBOUND=1.0;//惯性因子
     double W_LOWERBOUND=0.0;//惯性因子
-    double INCREASE_VALUE = 10.0;
+    double INCREASE_VALUE = 5.0;
+    double ITERATION_REINIT = 300;
+    double INFERIOR_VALUE = 5;
+    double INCREASE_SCALE = 0.8;
 }

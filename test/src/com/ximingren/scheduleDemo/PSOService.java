@@ -1,6 +1,7 @@
-package com.ximingren.jdbcDemo;
+package com.ximingren.scheduleDemo;
 
 import com.ximingren.CourseSchedule.Bean.po.ClassTask;
+
 import java.util.*;
 
 /**
@@ -98,12 +99,16 @@ public class PSOService {
     public boolean judgeConverge() {
         int classNum = gbestFitnessValueMap.keySet().size();
         double err_tolerance = 0.0;
+        int num = 0;
         for (String classNo : gbestFitnessValueMap.keySet()) {
             List<Double> list = gbestFitnessValueMap.get(classNo);
             double subValue = list.get(list.size() - 1) - list.get(0);
+            if (subValue > PSOConstants.INCREASE_VALUE) {
+                num = num + 1;
+            }
             err_tolerance += subValue;
         }
-        if (err_tolerance / classNum > PSOConstants.INCREASE_VALUE) {
+        if (num >= (int) (classNum * PSOConstants.INCREASE_SCALE)) {
             return false;
         }
         return true;
@@ -118,43 +123,48 @@ public class PSOService {
         //初始化
         init();
         //已迭代的次数
-        int t = 0;
+        int iterNum = 0;
+        int reRandomTimeNum = 0;
         //是否到达结束标准
         boolean continueIteration = true;
         while (continueIteration) {
             //更新粒子位置
-            ClassTaskService.selectiveParticle(subSpeciesPartilesMap, gBestParticle,swarm);
+            ClassTaskService.selectiveParticle(subSpeciesPartilesMap, gBestParticle, swarm);
             //所有的子种群粒子位置更新完成，进行更新适应度
-            if (t == 1) {
-                updateFitnessList();
-
-            }
+            updateFitnessList();
             continueIteration = judgeConverge();
-            t = t + 1;
-            if (t == 1000) {
-                continueIteration = false;
-            }
-            if (t > 5000) {
+            iterNum = iterNum + 1;
+            if (iterNum > PSOConstants.ITERATION_REINIT) {
+                reRandomTimeNum = reRandomTimeNum + 1;
+                for (Particle particle : swarm) {
+                    if (particle.getFitnessValue() < PSOConstants.INFERIOR_VALUE) {
+//                        重新分配时间
+                        String newTime = ClassSchedulUtil.randomTime(particle.getLocation(), swarm);
+                        particle.setLocation(particle.getLocation().substring(0, 29) + newTime);
+                    }
+                }
                 //清空变量
-                gbestFitnessValueMap.clear();
-                gBestParticle.clear();
-                swarm.clear();
-                subSpeciesPartilesMap.clear();
+
                 System.out.println("重新初始化");
-                init();
-                t = 0;
+                //                gbestFitnessValueMap.clear();
+//                gBestParticle.clear();
+//                swarm.clear();
+//                subSpeciesPartilesMap.clear();
+//                init();
+                iterNum = 0;
             }
         }
         //分配教室
         swarm = ClassTaskService.finalResult(swarm);
         //分配好时间和教师的总种群集合
         subSpeciesPartilesMap = ClassTaskService.transformSubSpecies(swarm);
-//        showBeforeAndAfterTable(continueIteration);
-            System.out.println("迭代次数： " + t);
+        showBeforeAndAfterTable(continueIteration);
+        System.out.println("迭代次数： " + iterNum);
+        System.out.println("重新分配适应值低的排课粒子的时间次数： " + reRandomTimeNum);
 
-        }
+    }
 
-    public  void showBeforeAndAfterTable(boolean flag) {
+    public void showBeforeAndAfterTable(boolean flag) {
         if (!flag) {
             for (String classNo : gbestFitnessValueMap.keySet()) {
                 System.out.println("初始课表：");
@@ -169,6 +179,7 @@ public class PSOService {
             }
         }
     }
+
     public static void main(String[] args) {
         PSOService psoService = new PSOService();
         psoService.executePSO();

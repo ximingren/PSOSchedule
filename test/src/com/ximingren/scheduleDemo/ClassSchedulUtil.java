@@ -1,4 +1,4 @@
-package com.ximingren.jdbcDemo;
+package com.ximingren.scheduleDemo;
 
 import com.ximingren.CourseSchedule.Bean.vo.ConstantInfo;
 import org.apache.commons.lang3.ArrayUtils;
@@ -133,7 +133,7 @@ public class ClassSchedulUtil {
             int index = ArrayUtils.indexOf(values, classTime);
             if (index != -1) {
                 if (iterNum>=10) {
-                    values=expectValue[iterNum%expectValue.length];
+                    values=expectValue[(index+1+iterNum)%expectValue.length];
                 }
                 int size = values.length;
                 String nextClassTime = values[(int) (Math.random() * size)];
@@ -264,9 +264,9 @@ public class ClassSchedulUtil {
         } else if (ArrayUtils.contains(fourExpectValue, temp)) {
             return 4;
         } else if (ArrayUtils.contains(twoExpectValue, temp)) {
-            return 2;
+            return -2;
         } else {
-            return 0;
+            return -6;
         }
     }
 }
