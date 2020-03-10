@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ximingren.CourseSchedule.Dao.ClassroomLocationDao">
+    <resultMap id="BaseResultMap" type="com.ximingren.CourseSchedule.Bean.po.ClassroomLocation">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="teachBuildNo" jdbcType="VARCHAR" property="teachbuildno" />
+        <result column="classroomNo" jdbcType="VARCHAR" property="classroomno" />
+        <result column="capacity" jdbcType="INTEGER" property="capacity" />
+        <result column="classroomAttr" jdbcType="VARCHAR" property="classroomattr" />
+    </resultMap>
+    <select id="selectByTeachBuildNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+      select id,teachBuildNo,classroomNo,capacity,classroomAttr
+      from classroom_location
+      where teachBuildNo=#{teachBuildNo}
+    </select>
+</mapper>

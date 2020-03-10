@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ximingren.CourseSchedule.Dao.TeachPlanDao">
+    <resultMap id="BaseResultMap" type="com.ximingren.CourseSchedule.Bean.po.TeachPlan">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="classNo" jdbcType="VARCHAR" property="classno" />
+        <result column="className" jdbcType="VARCHAR" property="classname" />
+        <result column="courseNo" jdbcType="VARCHAR" property="courseno" />
+        <result column="collegeNo" jdbcType="VARCHAR" property="collegeno" />
+        <result column="studentNumber" jdbcType="INTEGER" property="studentnumber" />
+        <result column="courseAttr" jdbcType="VARCHAR" property="courseattr" />
+        <result column="classHour" jdbcType="INTEGER" property="classhour" />
+        <result column="weeksNumber" jdbcType="INTEGER" property="weeksnumber" />
+        <result column="weeksSum" jdbcType="INTEGER" property="weekssum" />
+        <result column="semester" jdbcType="VARCHAR" property="semester" />
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.vo.QueryVO">
+        -- 获取班级编号、班级名称、课程编号、课程名称、学院编号、学生数量、课程属性、上课周数、每周上课课时，学期
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        classNo,
+        className,
+        teach_plan.courseNo,
+        course_info.courseName,
+        collegeNo,
+        studentNumber,
+        teach_plan.courseAttr,
+        weeksNumber,
+        weeksSum,
+        semester
+        FROM
+        teach_plan,
+        course_info
+        WHERE collegeNo=#{collegeno}
+        AND teach_plan.courseNo=course_info.courseNo
+--         TODO 这里不明白
+
+        )AS temp
+        <if test="condition!=null">
+           WHERE semester LIKE concat('%',#{condition},'%')
+           OR className LIKE concat ('%',#{condition},'%')
+           OR courseName LIKE concat ('%',#{condition},'%')
+        </if>
+    </select>
+</mapper>

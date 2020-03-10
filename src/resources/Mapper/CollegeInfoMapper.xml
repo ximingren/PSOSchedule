@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ximingren.CourseSchedule.Dao.CollegeInfoDao">
+    <resultMap id="BaseResultMap" type="com.ximingren.CourseSchedule.Bean.po.CollegeInfo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="collegeNo" jdbcType="VARCHAR" property="collegeno" />
+        <result column="collegeName" jdbcType="VARCHAR" property="collegename" />
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id,collegeNo,collegeName
+        from college_info
+    </select>
+</mapper>

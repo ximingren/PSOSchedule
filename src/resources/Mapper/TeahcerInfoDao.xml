@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ximingren.CourseSchedule.Dao.TeacherInfoDao">
+
+    <resultMap id="BaseResultMap" type="com.ximingren.CourseSchedule.Bean.po.TeacherInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="teacherNo" jdbcType="VARCHAR" property="teacherno"/>
+        <result column="teacherName" jdbcType="VARCHAR" property="teachername"/>
+        <result column="collegeNo" jdbcType="VARCHAR" property="collegeno"/>
+        <result column="age" jdbcType="INTEGER" property="age"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.vo.QueryVO">
+        -- 先获取教师编号、教师名，学院名，年龄，职称
+        -- 再从其中获取相应的数据
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        teacher_info.id,
+        teacherNo,
+        teacherName,
+        college_info.collegeName AS collegeNo,
+        age,
+        title
+        FROM
+        teacher_info,
+        college_info
+        WHERE teacher_info.collegeNo=#{collegeno}
+        AND teacher_info.collegeNo=college_info.collegeNo
+        ORDER BY teacher_info.id
+        )AS temp
+        <if test="condition!=null">
+            WHERE teacherName like concat('%',#{condition},'%')
+        </if>
+    </select>
+</mapper>
