@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ximingren.CourseSchedule.Dao.StudentInfoDao">
+
+    <resultMap id="BaseResultMap" type="com.ximingren.CourseSchedule.Bean.po.StudentInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="studentNo" jdbcType="VARCHAR" property="studentno"/>
+        <result column="studentName" jdbcType="VARCHAR" property="studentname"/>
+        <result column="collegeNo" jdbcType="VARCHAR" property="collegeno"/>
+        <result column="classNo" jdbcType="INTEGER" property="classno"/>
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.vo.QueryVO">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        student_info.id,
+        studentNo,
+        studentName,
+        class_info.className AS classNo,
+        college_info.collegeName AS collegeNo
+        FROM
+        student_info,
+        class_info,
+        college_info
+        WHERE student_info.classNo=class_info.classNo
+        AND college_info.collegeNo=student_info.collegeNo
+        ORDER BY student_info.id
+        )AS temp
+        <if test="condition!=null">
+            WHERE studentName like concat('%',#{condition},'%')
+            OR classNo like concat('%',#{condition},'%')
+            OR collegeNo like concat('%',#{condition},'%')
+            OR studentNo=#{condition}
+        </if>
+    </select>
+
+    <update id="updateByPrimaryKey" parameterType="com.ximingren.CourseSchedule.Bean.po.StudentInfo">
+        update student_info
+        <set>
+            <if test="studentno != null">
+                studentno = #{studentno,jdbcType=VARCHAR},
+            </if>
+            <if test="studentname != null">
+                studentname = #{studentname,jdbcType=VARCHAR},
+            </if>
+            <if test="collegeno != null">
+                collegeno = #{collegeno,jdbcType=VARCHAR},
+            </if>
+            <if test="classno != null">
+                classno = #{classno,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <delete id="deleteByPrimaryKey" parameterType="com.ximingren.CourseSchedule.Bean.po.StudentInfo">
+    delete from student_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insert" parameterType="com.ximingren.CourseSchedule.Bean.po.StudentInfo">
+        insert into student_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentno != null">
+                studentNo,
+            </if>
+            <if test="studentname != null">
+                studentName,
+            </if>
+            <if test="collegeno != null">
+                collegeNo,
+            </if>
+            <if test="classno != null">
+                classNo,
+            </if>
+
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="studentno != null">
+                #{studentno,jdbcType=VARCHAR},
+            </if>
+            <if test="studentname != null">
+                #{studentname,jdbcType=VARCHAR},
+            </if>
+            <if test="collegeno != null">
+                #{collegeno,jdbcType=VARCHAR},
+            </if>
+            <if test="classno != null">
+                #{classno,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+</mapper>

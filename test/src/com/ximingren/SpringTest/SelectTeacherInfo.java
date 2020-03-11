@@ -46,5 +46,23 @@ public class SelectTeacherInfo {
         }
     }
 
+    @Test
+    public void testInsert() {
+        TeacherInfo teacherInfo = new TeacherInfo();
+        teacherInfo.setTeacherno("123");
+        teacherInfo.setTeachername("李先生");
+        teacherInfo.setCollegeno("01");
+        teacherInfo.setAge(12);
+        teacherInfo.setTitle("讲师");
+        boolean flag = teacherInfoService.saveTeacherInfo(teacherInfo);
+        System.out.println("保存成功？："+flag);
+    }
 
+    @Test
+    public void testDelete() {
+        TeacherInfo teacherInfo = new TeacherInfo();
+        teacherInfo.setId((long) 106);
+        boolean flag = teacherInfoService.deleteTeacherInfo(teacherInfo);
+        System.out.println("删除成功？："+flag);
+    }
 }

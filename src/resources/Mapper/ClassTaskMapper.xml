@@ -16,11 +16,127 @@
         <result column="isFix" jdbcType="VARCHAR" property="isfix"/>
         <result column="classTime" jdbcType="VARCHAR" property="classtime"/>
     </resultMap>
+    <update id="updateByPrimaryKey" parameterType="com.ximingren.CourseSchedule.Bean.po.ClassTask">
+        update class_task
+        <set>
+            <if test="semester != null">
+                semester = #{semester,jdbcType=VARCHAR},
+            </if>
+            <if test="collegeno != null">
+                collegeNo = #{collegeno,jdbcType=VARCHAR},
+            </if>
+            <if test="classno != null">
+                classNo = #{classno,jdbcType=VARCHAR},
+            </if>
+            <if test="courseno != null">
+                courseNo = #{courseno,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherno != null">
+                teacherNo = #{teacherno,jdbcType=VARCHAR},
+            </if>
+            <if test="courseattr != null">
+                courseAttr = #{courseattr,jdbcType=VARCHAR},
+            </if>
+            <if test="studentnumber != null">
+                studentNumber = #{studentnumber,jdbcType=INTEGER},
+            </if>
+            <if test="weekssum != null">
+                weeksSum = #{weekssum,jdbcType=INTEGER},
+            </if>
+            <if test="weeksnumber != null">
+                weeksNumber = #{weeksnumber,jdbcType=INTEGER},
+            </if>
+            <if test="isfix != null">
+                isFix = #{isfix,jdbcType=VARCHAR},
+            </if>
+            <if test="classtime != null">
+                classTime = #{classtime,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <delete id="deleteByPrimaryKey" parameterType="com.ximingren.CourseSchedule.Bean.po.ClassTask">
+    delete from class_task
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
 
-    <select id="selectBySemester" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.po.ClassTask">
+    <select id="selectBySemester" resultMap="BaseResultMap"
+            parameterType="com.ximingren.CourseSchedule.Bean.po.ClassTask">
         select * from class_task where semester=#{semester,jdbcType=VARCHAR}
     </select>
-
+    <insert id="insert" parameterType="com.ximingren.CourseSchedule.Bean.po.ClassTask">
+        insert into class_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="semester != null">
+                semester,
+            </if>
+            <if test="collegeno != null">
+                collegeNo,
+            </if>
+            <if test="classno != null">
+                classNo,
+            </if>
+            <if test="courseno != null">
+                courseNo,
+            </if>
+            <if test="teacherno != null">
+                teacherNo,
+            </if>
+            <if test="courseattr != null">
+                courseAttr,
+            </if>
+            <if test="studentnumber != null">
+                studentNumber,
+            </if>
+            <if test="weekssum != null">
+                weeksSum,
+            </if>
+            <if test="weeksnumber != null">
+                weeksNumber,
+            </if>
+            <if test="isfix != null">
+                isFix,
+            </if>
+            <if test="classtime != null">
+                classTime
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="semester != null">
+                #{semester,jdbcType=VARCHAR},
+            </if>
+            <if test="collegeno != null">
+                #{collegeno,jdbcType=VARCHAR},
+            </if>
+            <if test="classno != null">
+                #{classno,jdbcType=VARCHAR},
+            </if>
+            <if test="courseno != null">
+                #{courseno,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherno != null">
+                #{teacherno,jdbcType=VARCHAR},
+            </if>
+            <if test="courseattr != null">
+                #{courseattr,jdbcType=VARCHAR},
+            </if>
+            <if test="studentnumber != null">
+                #{studentnumber,jdbcType=INTEGER},
+            </if>
+            <if test="weekssum != null">
+                #{weekssum,jdbcType=INTEGER},
+            </if>
+            <if test="weeksnumber != null">
+                #{weeksnumber,jdbcType=INTEGER},
+            </if>
+            <if test="isfix != null">
+                #{isfix,jdbcType=VARCHAR},
+            </if>
+            <if test="classtime != null">
+                #{classtime,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
     <select id="selectByColumnName" resultType="java.lang.String" parameterType="java.lang.String">
         select distinct  ${columnName} from class_task
     </select>
@@ -62,6 +178,6 @@
             OR classNo LIKE concat('%',#{condition},'%')
             OR courseNo LIKE concat('%',#{condition})
             OR teacherNo LIKE concat ('%',#{condition},'%')
-         </if>
+        </if>
     </select>
 </mapper>

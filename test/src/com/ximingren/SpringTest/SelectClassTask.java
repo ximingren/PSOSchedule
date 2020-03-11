@@ -44,7 +44,33 @@ public class SelectClassTask {
         for (ClassTask classTask : classTaskList) {
             System.out.println(classTask.toString());
         }
-
     }
 
+    @Test
+    public void testInsert() {
+        ClassTask classTask = new ClassTask();
+        classTask.setId((long) 117);
+        classTask.setSemester("2016-2017-1");
+        classTask.setCollegeno("02");
+        classTask.setClassno("2016020101");
+        classTask.setCourseno("100014");
+        classTask.setTeacherno("02100001");
+        classTask.setCourseattr("01");
+        classTask.setStudentnumber(30);
+        classTask.setWeekssum(9);
+        classTask.setWeeksnumber(4);
+        classTask.setIsfix("2");
+        classTask.setClasstime("01");
+        boolean flag = classTaskService.saveClassTask(classTask);
+        System.out.println("保存成功？："+flag);
+    }
+
+    @Test
+    public void testDelete() {
+        ClassTask classTask = new ClassTask();
+        classTask.setId((long) 117);
+        boolean flag = classTaskService.deleteClassTask(classTask);
+        System.out.println("删除成功？:"+flag);
+
+    }
 }

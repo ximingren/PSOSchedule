@@ -11,6 +11,7 @@
         <result column="title" jdbcType="VARCHAR" property="title"/>
     </resultMap>
     <select id="selectAll" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.vo.QueryVO">
+
         -- 先获取教师编号、教师名，学院名，年龄，职称
         -- 再从其中获取相应的数据
         SELECT
@@ -35,4 +36,70 @@
             WHERE teacherName like concat('%',#{condition},'%')
         </if>
     </select>
+
+    <update id="updateByPrimaryKey" parameterType="com.ximingren.CourseSchedule.Bean.po.TeacherInfo">
+        update teacher_info
+        <set>
+            <if test="teacherno != null">
+                teacherno = #{teacherno,jdbcType=VARCHAR},
+            </if>
+            <if test="teachername != null">
+                teachername = #{teachername,jdbcType=VARCHAR},
+            </if>
+            <if test="collegeno != null">
+                collegeno = #{collegeno,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <delete id="deleteByPrimaryKey" parameterType="com.ximingren.CourseSchedule.Bean.po.TeacherInfo">
+    delete from teacher_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insert" parameterType="com.ximingren.CourseSchedule.Bean.po.TeacherInfo">
+        insert into teacher_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teacherno != null">
+                teacherNo,
+            </if>
+            <if test="teachername != null">
+                teacherName,
+            </if>
+            <if test="collegeno != null">
+                collegeNo,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="teacherno != null">
+                #{teacherno,jdbcType=VARCHAR},
+            </if>
+            <if test="teachername != null">
+                #{teachername,jdbcType=VARCHAR},
+            </if>
+            <if test="collegeno != null">
+                #{collegeno,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
 </mapper>

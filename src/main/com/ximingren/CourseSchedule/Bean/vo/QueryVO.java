@@ -8,7 +8,6 @@ public class QueryVO {
     private String collegeno;
     private String semester;
 
-
     public Map<String, String> getParam() {
         return param;
     }

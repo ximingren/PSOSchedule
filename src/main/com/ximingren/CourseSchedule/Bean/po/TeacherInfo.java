@@ -1,7 +1,7 @@
 package com.ximingren.CourseSchedule.Bean.po;
 
 public class TeacherInfo {
-    private Integer id;
+    private Long id;
 
     private String teacherno;
 
@@ -13,11 +13,11 @@ public class TeacherInfo {
 
     private String title;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

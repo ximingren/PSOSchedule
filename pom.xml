@@ -57,5 +57,11 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>RELEASE</version>
         </dependency>
+<!--        Faker-->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>

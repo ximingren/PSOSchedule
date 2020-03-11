@@ -33,4 +33,34 @@ public class ClassTaskService implements IClassTaskService {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public Boolean saveClassTask(ClassTask classTask) {
+        Long id = classTask.getId();
+        try {
+            //根据id是否为空来确定是插入操作还是更新操作
+            if (id != null) {
+                if (classTaskDao.updateByPrimaryKey(classTask) > 0) {
+                    return true;
+                }
+                return false;
+            } else {
+                if (classTaskDao.insert(classTask) > 0) {
+                    return true;
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public Boolean deleteClassTask(ClassTask classTask) {
+        if(classTaskDao.deleteByPrimaryKey(classTask) > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
