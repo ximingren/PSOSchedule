@@ -2,19 +2,11 @@ package com.ximingren.CourseSchedule.Bean.vo;
 import java.util.Map;
 
 public class QueryVO {
-    private Map<String,String> param;
     private Map<String,Integer> pageParam;
     private String condition;
     private String collegeno;
     private String semester;
 
-    public Map<String, String> getParam() {
-        return param;
-    }
-
-    public void setParam(Map<String, String> param) {
-        this.param = param;
-    }
 
     public String getCondition() {
         return condition;

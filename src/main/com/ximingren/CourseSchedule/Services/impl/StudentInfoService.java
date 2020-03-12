@@ -27,7 +27,7 @@ public class StudentInfoService implements IStudentInfoService {
     }
 
     @Override
-    public Boolean saveTeacherInfo(StudentInfo studentInfo) {
+    public Boolean saveStudentInfo(StudentInfo studentInfo) {
         Long id = studentInfo.getId();
         try {
             //根据id是否为空来确定是插入操作还是更新操作
@@ -49,7 +49,7 @@ public class StudentInfoService implements IStudentInfoService {
     }
 
     @Override
-    public Boolean deleteTeacherInfo(StudentInfo studentInfo) {
+    public Boolean deleteStudentInfo(StudentInfo studentInfo) {
         if (studentInfoDao.deleteByPrimaryKey(studentInfo) > 0) {
             return true;
         } else {

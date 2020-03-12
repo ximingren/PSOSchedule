@@ -35,6 +35,9 @@
         <if test="condition!=null">
             WHERE teacherName like concat('%',#{condition},'%')
         </if>
+        <if test="pageParam != null">
+            LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
+        </if>
     </select>
 
     <update id="updateByPrimaryKey" parameterType="com.ximingren.CourseSchedule.Bean.po.TeacherInfo">

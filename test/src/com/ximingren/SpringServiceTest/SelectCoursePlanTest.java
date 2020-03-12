@@ -1,4 +1,4 @@
-package com.ximingren.SpringTest;
+package com.ximingren.SpringServiceTest;
 
 import com.ximingren.CourseSchedule.Bean.po.CoursePlan;
 import com.ximingren.CourseSchedule.Bean.vo.QueryVO;
@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName SelectCoursePlanTest
@@ -37,6 +39,10 @@ public class SelectCoursePlanTest {
     public void testByCollege() {
         QueryVO queryVO = new QueryVO();
         queryVO.setCollegeno("01");
+        Map<String, Integer> pageParam = new HashMap<>();
+        pageParam.put("pageNo", 6);
+        pageParam.put("pageSize", 5);
+        queryVO.setPageParam(pageParam);
         List<CoursePlan> coursePlanList = coursePlanService.selectAll(queryVO);
         for (CoursePlan coursePlan : coursePlanList) {
             System.out.println(coursePlan.toString());

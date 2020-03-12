@@ -1,4 +1,4 @@
-package com.ximingren.SpringTest;
+package com.ximingren.SpringServiceTest;
 
 import com.ximingren.CourseSchedule.Bean.po.StudentInfo;
 import com.ximingren.CourseSchedule.Bean.vo.QueryVO;
@@ -33,6 +33,7 @@ public class SelectStudentInfo {
             System.out.println(studentInfo.toString());
         }
     }
+
     @Test
     public void testByStudentName() {
         QueryVO queryVO = new QueryVO();
@@ -49,7 +50,7 @@ public class SelectStudentInfo {
         studentInfo.setStudentno("201621190615");
         studentInfo.setCollegeno("01");
         studentInfo.setClassno("2016211906");
-        boolean flag = studentInfoService.saveTeacherInfo(studentInfo);
+        boolean flag = studentInfoService.saveStudentInfo(studentInfo);
         System.out.println("保存成功？：" + flag);
     }
 
@@ -57,8 +58,8 @@ public class SelectStudentInfo {
     public void testDelete() {
         StudentInfo studentInfo = new StudentInfo();
         studentInfo.setId((long) 1873);
-        boolean flag = studentInfoService.deleteTeacherInfo(studentInfo);
-        System.out.println("删除成功？："+flag);
+        boolean flag = studentInfoService.deleteStudentInfo(studentInfo);
+        System.out.println("删除成功？：" + flag);
     }
 }
 

@@ -120,5 +120,8 @@
             OR courseNo LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
             OR teacherNo LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
         </if>
+        <if test="pageParam != null">
+            LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
+        </if>
     </select>
 </mapper>

@@ -17,5 +17,8 @@
             WHERE teachBuildNo LIKE concat ('%',#{condition},'%')
             OR teachBuildName LIKE concat('%',#{condition},'%')
         </if>
+        <if test="pageParam != null">
+            LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
+        </if>
     </select>
 </mapper>

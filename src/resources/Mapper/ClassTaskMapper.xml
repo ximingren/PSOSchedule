@@ -179,5 +179,8 @@
             OR courseNo LIKE concat('%',#{condition})
             OR teacherNo LIKE concat ('%',#{condition},'%')
         </if>
+        <if test="pageParam != null">
+            LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
+        </if>
     </select>
 </mapper>

@@ -1,4 +1,4 @@
-package com.ximingren.SpringTest;
+package com.ximingren.SpringServiceTest;
 
 import com.ximingren.CourseSchedule.Bean.po.*;
 import com.ximingren.CourseSchedule.Bean.vo.QueryVO;

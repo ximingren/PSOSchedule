@@ -8,7 +8,7 @@ import java.util.List;
 public interface IStudentInfoService {
     List<StudentInfo> queryStudentInfo(QueryVO queryVO);
 
-    Boolean saveTeacherInfo(StudentInfo studentInfo);
+    Boolean saveStudentInfo(StudentInfo studentInfo);
 
-    Boolean deleteTeacherInfo(StudentInfo studentInfo);
+    Boolean deleteStudentInfo(StudentInfo studentInfo);
 }

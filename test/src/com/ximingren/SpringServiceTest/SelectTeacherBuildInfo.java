@@ -1,10 +1,8 @@
-package com.ximingren.SpringTest;
+package com.ximingren.SpringServiceTest;
 
-import com.ximingren.CourseSchedule.Bean.po.CollegeInfo;
 import com.ximingren.CourseSchedule.Bean.po.TeachBuildInfo;
 import com.ximingren.CourseSchedule.Bean.vo.QueryVO;
 import com.ximingren.CourseSchedule.CourseScheduleSystemApplication;
-import com.ximingren.CourseSchedule.Services.ICollegeInfoService;
 import com.ximingren.CourseSchedule.Services.ITeachBuildInfoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
