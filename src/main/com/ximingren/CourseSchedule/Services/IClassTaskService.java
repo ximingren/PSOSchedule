@@ -15,4 +15,5 @@ public interface IClassTaskService {
     List<ClassTask> queryClassTask(QueryVO queryVO);
     Boolean saveClassTask(ClassTask classTask);
     Boolean deleteClassTask(ClassTask classTask);
+    int getCount();
 }

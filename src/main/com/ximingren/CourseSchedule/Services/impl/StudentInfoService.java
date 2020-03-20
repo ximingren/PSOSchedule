@@ -56,4 +56,8 @@ public class StudentInfoService implements IStudentInfoService {
             return false;
         }
     }
+    @Override
+    public int getCount() {
+        return studentInfoDao.getCount();
+    }
 }

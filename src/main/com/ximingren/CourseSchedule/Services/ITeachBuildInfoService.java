@@ -13,4 +13,6 @@ import java.util.List;
  */
 public interface ITeachBuildInfoService {
     List<TeachBuildInfo> queryTeachBuildInfo(QueryVO queryVO);
+
+    int getCount();
 }

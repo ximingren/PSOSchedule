@@ -15,4 +15,6 @@ import java.util.List;
 @Mapper
 public interface TeachBuildInfoDao {
     List<TeachBuildInfo> selectAll(QueryVO queryVO);
+
+    int getCount();
 }

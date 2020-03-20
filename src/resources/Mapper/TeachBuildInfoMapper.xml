@@ -21,4 +21,7 @@
             LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
         </if>
     </select>
+    <select id="getCount" resultType="java.lang.Integer">
+          select count(id) from teach_build_info;
+    </select>
 </mapper>

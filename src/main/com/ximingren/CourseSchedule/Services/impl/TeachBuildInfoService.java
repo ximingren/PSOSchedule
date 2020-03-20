@@ -31,4 +31,9 @@ public class TeachBuildInfoService implements ITeachBuildInfoService {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public int getCount() {
+        return teachBuildInfoDao.getCount();
+    }
 }

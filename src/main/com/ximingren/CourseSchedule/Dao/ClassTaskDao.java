@@ -25,4 +25,7 @@ public interface ClassTaskDao {
     int updateByPrimaryKey(ClassTask classTask);
     //删除开课计划
     int deleteByPrimaryKey(ClassTask classTask);
+
+    //获得总数量数
+    int getCount();
 }

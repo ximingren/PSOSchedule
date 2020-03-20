@@ -1,11 +1,9 @@
 package com.ximingren.CourseSchedule.Controller;
 
 import com.ximingren.CourseSchedule.Bean.po.ClassTask;
-import com.ximingren.CourseSchedule.Bean.po.TeacherInfo;
 import com.ximingren.CourseSchedule.Bean.vo.QueryVO;
 import com.ximingren.CourseSchedule.Bean.vo.ResultVO;
 import com.ximingren.CourseSchedule.Services.IClassTaskService;
-import com.ximingren.CourseSchedule.Services.ITeacherInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,9 +31,10 @@ public class ClassTaskController {
             Map<String, Integer> pageParam = new HashMap<>();
             if (queryVO.getPageParam() != null) {
                 pageParam = queryVO.getPageParam();
-                Integer pageNo = pageParam.get("pageNo") * pageParam.get("pageSize");
+                Integer pageNo = (pageParam.get("pageNo")-1) * pageParam.get("pageSize");
                 pageParam.put("pageStart", pageNo);
             }
+            pageParam.put("count", classTaskService.getCount());
             List<ClassTask> classTaskList = classTaskService.queryClassTask(queryVO);
             if (classTaskList != null && classTaskList.size() > 0) {
                 return ResultVO.ok("查询开课计划成功", classTaskList, pageParam);

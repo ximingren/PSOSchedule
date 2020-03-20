@@ -34,9 +34,10 @@ public class TeachBuildController {
             Map<String, Integer> pageParam = new HashMap<>();
             if (queryVO.getPageParam() != null) {
                 pageParam = queryVO.getPageParam();
-                Integer pageNo = pageParam.get("pageNo") * pageParam.get("pageSize");
-                pageParam.put("pageNum", pageNo);
+                Integer pageNo = (pageParam.get("pageNo")-1) * pageParam.get("pageSize");
+                pageParam.put("pageStart", pageNo);
             }
+            pageParam.put("count", teachBuildInfoService.getCount());
             List<TeachBuildInfo> teachBuildInfoList = teachBuildInfoService.queryTeachBuildInfo(queryVO);
             if (teachBuildInfoList != null && teachBuildInfoList.size() > 0) {
                 return ResultVO.ok("查询教学楼成功", teachBuildInfoList, pageParam);

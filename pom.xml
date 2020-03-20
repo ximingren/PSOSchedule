@@ -63,5 +63,11 @@
             <artifactId>javafaker</artifactId>
             <version>1.0.0</version>
         </dependency>
+<!--        json-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 </project>

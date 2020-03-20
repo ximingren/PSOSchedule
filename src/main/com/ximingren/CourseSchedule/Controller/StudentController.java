@@ -36,6 +36,7 @@ public class StudentController {
                 Integer pageNo = pageParam.get("pageNo") * pageParam.get("pageSize");
                 pageParam.put("pageStart", pageNo);
             }
+            pageParam.put("count", studentInfoService.getCount());
             List<StudentInfo> studentInfoList = studentInfoService.queryStudentInfo(queryVO);
             if (studentInfoList != null && studentInfoList.size() > 0) {
                 return ResultVO.ok("查询学生成功", studentInfoList, pageParam);

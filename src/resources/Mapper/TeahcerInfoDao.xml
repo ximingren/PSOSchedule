@@ -11,32 +11,41 @@
         <result column="title" jdbcType="VARCHAR" property="title"/>
     </resultMap>
     <select id="selectAll" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.vo.QueryVO">
-
         -- 先获取教师编号、教师名，学院名，年龄，职称
         -- 再从其中获取相应的数据
-        SELECT
-        *
-        FROM
-        (
-        SELECT
-        teacher_info.id,
-        teacherNo,
-        teacherName,
-        college_info.collegeName AS collegeNo,
-        age,
-        title
-        FROM
-        teacher_info,
-        college_info
-        WHERE teacher_info.collegeNo=#{collegeno}
-        AND teacher_info.collegeNo=college_info.collegeNo
-        ORDER BY teacher_info.id
-        )AS temp
-        <if test="condition!=null">
-            WHERE teacherName like concat('%',#{condition},'%')
+        <if test="collegeno!=null">
+            SELECT
+            *
+            FROM
+            (
+            SELECT
+            teacher_info.id,
+            teacherNo,
+            teacherName,
+            college_info.collegeName,
+            college_info.collegeNo AS collegeNo,
+            age,
+            title
+            FROM
+            teacher_info,
+            college_info
+            WHERE teacher_info.collegeNo=#{collegeno}
+            AND teacher_info.collegeNo=college_info.collegeNo
+            ORDER BY teacher_info.id
+            )AS temp
+            <if test="condition!=null">
+                WHERE teacherName like concat('%',#{condition},'%')
+            </if>
+            <if test="pageParam != null">
+                LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
+            </if>
         </if>
-        <if test="pageParam != null">
-            LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
+        <if test="collegeno==null">
+            select *
+            from teacher_info
+            <if test="pageParam != null">
+                LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
+            </if>
         </if>
     </select>
 
@@ -104,5 +113,7 @@
             </if>
         </trim>
     </insert>
-
+    <select id="getCount" resultType="java.lang.Integer">
+          select count(id) from teacher_info;
+    </select>
 </mapper>

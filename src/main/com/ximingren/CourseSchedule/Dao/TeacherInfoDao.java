@@ -19,5 +19,8 @@ public interface TeacherInfoDao {
 
     //删除教师信息
     int deleteByPrimaryKey(TeacherInfo teacherInfo);
+
+    //获取数量
+    int getCount();
 }
 

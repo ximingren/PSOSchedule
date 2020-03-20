@@ -56,4 +56,8 @@ public class TeacherInfoService implements ITeacherInfoService {
             return false;
         }
     }
+    @Override
+    public int getCount() {
+        return teacherInfoDao.getCount();
+    }
 }

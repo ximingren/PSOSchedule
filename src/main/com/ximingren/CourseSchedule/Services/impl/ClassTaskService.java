@@ -63,4 +63,8 @@ public class ClassTaskService implements IClassTaskService {
             return false;
         }
     }
+    @Override
+    public int getCount() {
+        return classTaskDao.getCount();
+    }
 }

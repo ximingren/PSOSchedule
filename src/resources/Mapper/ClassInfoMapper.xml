@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ximingren.CourseSchedule.Dao.ClassInfoDao">
-
+    <resultMap id="BaseResultMap" type="com.ximingren.CourseSchedule.Bean.po.ClassInfo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="classno" jdbcType="VARCHAR" property="classno" />
+        <result column="classname" jdbcType="VARCHAR" property="classname" />
+        <result column="studentnumber" jdbcType="VARCHAR" property="studentnumber" />
+    </resultMap>
     <select id="selectStudentNumber" resultType="java.lang.Integer" parameterType="java.lang.String">
         select studentNumber from class_info
         where classNo=#{classNo}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select *
+        from class_info
     </select>
 </mapper>

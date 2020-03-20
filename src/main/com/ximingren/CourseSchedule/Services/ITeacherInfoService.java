@@ -9,4 +9,6 @@ public interface ITeacherInfoService {
     List<TeacherInfo> queryTeacherInfo(QueryVO queryVO);
     Boolean saveTeacherInfo(TeacherInfo teacherInfo);
     Boolean deleteTeacherInfo(TeacherInfo teacherInfo);
+
+    int getCount();
 }

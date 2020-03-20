@@ -11,4 +11,6 @@ public interface IStudentInfoService {
     Boolean saveStudentInfo(StudentInfo studentInfo);
 
     Boolean deleteStudentInfo(StudentInfo studentInfo);
+
+    int getCount();
 }

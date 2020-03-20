@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper
 public interface StudentInfoDao {
     List<StudentInfo> selectAll(QueryVO queryVO);
+
     //新增学生信息
     int insert(StudentInfo studentInfo);
 
@@ -17,4 +18,7 @@ public interface StudentInfoDao {
 
     //删除学生信息
     int deleteByPrimaryKey(StudentInfo studentInfo);
+
+    //获取数量
+    int getCount();
 }

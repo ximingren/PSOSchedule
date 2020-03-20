@@ -18,8 +18,10 @@
         student_info.id,
         studentNo,
         studentName,
-        class_info.className AS classNo,
-        college_info.collegeName AS collegeNo
+        class_info.classNo AS classNo,
+        class_info.className,
+        college_info.collegeName,
+        college_info.collegeNo AS collegeNo
         FROM
         student_info,
         class_info,
@@ -30,8 +32,8 @@
         )AS temp
         <if test="condition!=null">
             WHERE studentName like concat('%',#{condition},'%')
-            OR classNo like concat('%',#{condition},'%')
-            OR collegeNo like concat('%',#{condition},'%')
+            OR className like concat('%',#{condition},'%')
+            OR collegeName like concat('%',#{condition},'%')
             OR studentNo=#{condition}
         </if>
         <if test="pageParam != null">
@@ -96,4 +98,7 @@
         </trim>
 
     </insert>
+    <select id="getCount" resultType="java.lang.Integer">
+          select count(id) from student_info;
+    </select>
 </mapper>

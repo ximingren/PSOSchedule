@@ -31,7 +31,7 @@ public class ScheduleTest {
 
     @Test
     public void testSchedule() {
-        classScheduleService.executeSchedule();
+        classScheduleService.executeSchedule(new ClassTask());
     }
 
 

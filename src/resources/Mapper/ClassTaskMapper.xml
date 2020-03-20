@@ -149,9 +149,12 @@
         clt.id,
         clt.semester,
         clt.collegeNo,
-        cli.className AS classNo,
-        coi.courseName AS courseNo,
-        tei.teacherName AS teacherNo,
+        cli.classNo AS classNo,
+        coi.courseNo AS courseNo,
+        tei.teacherNo AS teacherNo,
+        cli.className AS className,
+        coi.courseName AS courseName,
+        tei.teacherName AS teacherName,
         clt.courseAttr,
         clt.studentNumber,
         clt.weeksSum,
@@ -175,12 +178,15 @@
         )AS temp
         <if test="condition!=null">
             WHERE semester LIKE concat('%',#{condition},'%')
-            OR classNo LIKE concat('%',#{condition},'%')
-            OR courseNo LIKE concat('%',#{condition})
-            OR teacherNo LIKE concat ('%',#{condition},'%')
+            OR className LIKE concat('%',#{condition},'%')
+            OR courseName LIKE concat('%',#{condition})
+            OR teacherName LIKE concat ('%',#{condition},'%')
         </if>
         <if test="pageParam != null">
             LIMIT #{pageParam.pageStart},#{pageParam.pageSize}
         </if>
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(id) from class_task;
     </select>
 </mapper>

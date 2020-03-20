@@ -33,16 +33,17 @@ public class TeacherController {
             Map<String, Integer> pageParam = new HashMap<>();
             if (queryVO.getPageParam() != null) {
                 pageParam = queryVO.getPageParam();
-                Integer pageNo = pageParam.get("pageNo") * pageParam.get("pageSize");
+                Integer pageNo = (pageParam.get("pageNo")-1) * pageParam.get("pageSize");
                 pageParam.put("pageStart", pageNo);
             }
+            pageParam.put("count", teacherInfoService.getCount());
             List<TeacherInfo> teacherInfoList = teacherInfoService.queryTeacherInfo(queryVO);
             if (teacherInfoList != null && teacherInfoList.size() > 0) {
                 return ResultVO.ok("查询教师成功", teacherInfoList, pageParam);
             }
             return ResultVO.faile("无教师信息");
         } catch (Exception e) {
-            return ResultVO.faile("教师查询失败");
+            return ResultVO.faile("教师查询失败"+e);
         }
     }
 

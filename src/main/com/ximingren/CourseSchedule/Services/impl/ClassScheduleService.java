@@ -53,9 +53,7 @@ public class ClassScheduleService implements IClassScheduleService {
      *
      * @return 是否排课成功
      */
-    public boolean executeSchedule() {
-        ClassTask classTask = new ClassTask();
-        classTask.setSemester("2015-2016-1");
+    public boolean executeSchedule(ClassTask classTask) {
         List<ClassTask> classTaskList = classTaskDao.selectBySemester(classTask);
         //迭代次数
         int iterNum = 0;
@@ -90,6 +88,12 @@ public class ClassScheduleService implements IClassScheduleService {
             for (ClassTask classTask1 : classTaskList) {
                 coursePlanDao.updateCoursePlan(classTask1);
             }
+            subSpeciesParticlesMap.clear();
+            swarm.clear();
+            initSubSpeciesMap.clear();
+            gbestFitnessValueMap.clear();
+            gBestParticleMap.clear();
+            continueIteration = true;
             return true;
         } catch (Exception e) {
             System.out.println("PSO算法迭代发送异常" + e);
