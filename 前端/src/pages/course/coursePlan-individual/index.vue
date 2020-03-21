@@ -140,6 +140,7 @@ export default {
                     if (parseInt(item) === classtime) {
                         ele[day][classtime] += '<div style="text-align:center;font-size:20px ">' + data['courseno'] + ' </div>'
                         ele[day][classtime] += '<div style="text-align:center;font-size:20px "> ' + data['teacherno'] + '</div>'
+                        ele[day][classtime] += '<div style="text-align:center;font-size:20px "> ' + data['classroomno'] + '</div>'
                         ele[day][classtime] += '<div style="text-align:center;font-size:20px "> ' + data['weekssum'] + '周' + '</div>'
                     }
                 }

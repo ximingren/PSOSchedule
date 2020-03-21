@@ -376,9 +376,15 @@ export default {
         },
         async onSchedule() {
             if (this.scheduleData.semester) {
-                this.scheduleLoding = true
-                await courseSchedule(this.scheduleData)
-                this.scheduleLoding = false
+                this.$confirm('确认重新排课？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(async () => {
+                    this.scheduleLoding = true
+                    await courseSchedule(this.scheduleData)
+                    this.scheduleLoding = false
+                })
             } else {
                 Message.error('请输入学院')
             }

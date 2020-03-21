@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ximingren.CourseSchedule.Dao.UserDao">
+    <resultMap id="BaseResultMap" type="com.ximingren.CourseSchedule.Bean.po.User">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="role" jdbcType="VARCHAR" property="role" />
+    </resultMap>
+    <resultMap id="Permission" type="com.ximingren.CourseSchedule.Bean.po.Permission">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="rolename" jdbcType="VARCHAR" property="rolename" />
+        <result column="roleId" jdbcType="VARCHAR" property="roleId" />
+        <result column="permission" jdbcType="VARCHAR" property="permission" />
+    </resultMap>
+    <select id="findUser" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from user_info
+        where username=#{username} AND password=#{password}
+    </select>
+    <select id="findPermissions" resultMap="Permission" parameterType="java.lang.String">
+        select * from permission_info where roleId=#{roleId}
+    </select>
+</mapper>

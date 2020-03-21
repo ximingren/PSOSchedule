@@ -1,22 +1,25 @@
 <template>
     <div>
         <router-view></router-view>
-        <TotalStatus/>
+        <el-card>
+            <div>今天是{{showTime}},欢迎你！</div>
+        </el-card>
     </div>
 </template>
 
 <script>
-import TotalStatus from './component/total-status'
 
 export default {
     data() {
-        return {}
+        return {
+        }
+    },
+    created() {
+        var nowTime = new Date()
+        this.showTime = nowTime.getFullYear() + '-' + (nowTime.getMonth() + 1) + '-' + nowTime.getDate()
     },
     mounted() {
 
-    },
-    components: {
-        TotalStatus
     }
 }
 </script>

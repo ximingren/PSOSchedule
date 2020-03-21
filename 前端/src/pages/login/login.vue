@@ -18,10 +18,9 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="login">
-                Sign in
+                登  录
                 </el-button>
             </el-form-item>
-            <div class="tips">用户为admin的时候，能够看到所有的权限列表，其余账号只能看到部分</div>
         </el-form>
     </div>
 </template>
@@ -80,7 +79,7 @@ export default {
         async login() {
             try {
                 let data = await login(this.loginForm)
-                let token = data.token
+                let token = data.data.token
                 // 设置token
                 this.$store.commit('LOGIN_IN', token)
                 // 跳转到首页
