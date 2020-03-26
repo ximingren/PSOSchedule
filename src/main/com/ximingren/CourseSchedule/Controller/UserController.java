@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * @ClassName UserController
- * @Description TODO
+ * @Description 暂时不提供修改密码等个人功能
  * @Author ximingren
  * @Date 2020/3/10 14:55
  */
@@ -28,6 +28,7 @@ import java.util.Map;
 public class UserController {
     @Autowired
     IUserService userService;
+
     private Map<String, User> userMap = new HashMap<>();
     private final BASE64Encoder encoder = new BASE64Encoder();
 
@@ -35,7 +36,21 @@ public class UserController {
     public ResultVO UserLogin(@RequestBody User requestUser) {
         String username = requestUser.getUsername();
         String password = requestUser.getPassword();
-        User user = userService.login(username, password);
+        String loginType = requestUser.getLoginType();
+        User user = null;
+        if (username.equals("admin")) {
+            user = userService.login(username, password);
+        } else {
+            if (loginType.equals("1")) {
+                //学生
+                user = userService.loginStudent(username, password);
+
+            } else if (loginType.equals("2")) {
+                //教师
+                user = userService.loginTeacher(username, password);
+            }
+        }
+
         if (user != null) {
             long time = System.currentTimeMillis();
             String timestamp = String.valueOf(time / 1000);
@@ -44,7 +59,7 @@ public class UserController {
             jsonObject.put("token", token);
             userMap.put(token, user);
             user.setRoleName(user.getPermissions().get(0).getRolename());
-            return ResultVO.ok("登录成功! 欢迎你，" + username, jsonObject);
+            return ResultVO.ok("登录成功! 欢迎你，" + user.getUsername(), jsonObject);
         } else {
             return ResultVO.faile("登录失败");
         }
@@ -56,7 +71,9 @@ public class UserController {
         User user = userMap.get(token);
         if (user != null) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("roles", user.getRoleName());
+            jsonObject.put("roleName", user.getRoleName());
+            jsonObject.put("userName", user.getUsername());
+            jsonObject.put("name", user.getCondition());
             JSONArray jsonArray = new JSONArray();
             for (Permission permission : user.getPermissions()) {
                 jsonArray.add(permission.getPermission());

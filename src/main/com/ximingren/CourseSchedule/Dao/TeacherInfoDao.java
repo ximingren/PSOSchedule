@@ -3,6 +3,7 @@ package com.ximingren.CourseSchedule.Dao;
 import com.ximingren.CourseSchedule.Bean.po.TeacherInfo;
 import com.ximingren.CourseSchedule.Bean.vo.QueryVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,5 +23,7 @@ public interface TeacherInfoDao {
 
     //获取数量
     int getCount();
+
+    TeacherInfo findTeacher(@Param("username") String username, @Param("password") String password);
 }
 

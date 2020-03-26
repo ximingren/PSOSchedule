@@ -10,16 +10,16 @@ export default {
         sidebarMenu: [] /** 导航菜单 */,
         currentMenu: '' /** 当前active导航菜单 */,
         control_list: [] /** 完整的权限列表 */,
-        avatar: ''/** 头像 */,
-        account: ''/** 用户角色 */
+        account: ''/** 用户角色 */,
+        username: ''
     },
     getters: {},
     mutations: {
-        SET_AVATAR(state, avatar) {
-            state.avatar = avatar
-        },
         SET_ACCOUNT(state, account) {
             state.account = account
+        },
+        SET_USERNAME(state, username) {
+            state.username = username
         },
         SET_PERMISSION(state, routes) {
             state.permissionList = routes
@@ -45,10 +45,9 @@ export default {
         async FETCH_PERMISSION({ commit, state }) {
             // 获取权限列表
             let permissionList = await fetchPermission()
-            // 设置头像
-            commit('SET_AVATAR', permissionList.avatar)
             // 设置用户名
             commit('SET_ACCOUNT', permissionList.name)
+            commit('SET_USERNAME', permissionList.userName)
             // permissionList.data里面的是用户拥有的权限,过滤出用户权限对应的路由列表
             let routes = recursionRouter(permissionList.data, dynamicRouter)
             let MainContainer = DynamicRoutes.find(v => v.path === '')

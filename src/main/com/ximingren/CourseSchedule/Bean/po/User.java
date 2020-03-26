@@ -14,7 +14,25 @@ public class User {
     private String password;
     private String role;
     private String roleName;
+    private String loginType;
+    private String condition;
     private List<Permission> permissions;
+
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
 
     public long getId() {
         return id;
@@ -72,6 +90,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
                 ", roleName='" + roleName + '\'' +
+                ", loginType='" + loginType + '\'' +
+                ", condition='" + condition + '\'' +
                 ", permissions=" + permissions +
                 '}';
     }

@@ -1,2 +1,19 @@
-1.借鉴了https://github.com/Code-Chen/CourseSchedulingSystem\
-2.借鉴了不知道网址的PSO-example的库
+#基于粒子群群体优化算法实现的排课系统
+#####系统后台框架是SpringBoot、Mybatis，数据库采用MySql
+#####前端使用Element-UI框架和Vue完成
+####系统主要模块有用户权限模块、课表查询模块、开课计划管理模块、学院管理、教师管理、教学楼管理、学生管理
+
+####缺陷以及不足：
+* 权限管理和用户管理模块没有
+* 首页展示空缺
+* 个人中心以及附属的修改个人信息无
+* 不能查询其他班级的课表，以及不能按周查询个人课表
+* 增加学生和增加教师存在学号或工号不能自动补全的bug
+* 教学楼教室管理模块没有
+* 排课算法优化效果没有非常好，需要进一步优化
+---
+对以下三个开源库表示感谢
+---
+* 1.后台借鉴了https://github.com/Code-Chen/CourseSchedulingSystem
+* 2.粒子群群体优化算法的入门借鉴了不知道网址的PSO-example的库
+* 3.前端借鉴了https://github.com/loveRandy/vue-cli3.0-vueadmin

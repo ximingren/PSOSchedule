@@ -12,6 +12,15 @@ public class StudentInfo {
     private String studentname;
     private String collegeno;
     private String classno;
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public Long getId() {
         return id;
@@ -61,6 +70,7 @@ public class StudentInfo {
                 ", studentname='" + studentname + '\'' +
                 ", collegeno='" + collegeno + '\'' +
                 ", classno='" + classno + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

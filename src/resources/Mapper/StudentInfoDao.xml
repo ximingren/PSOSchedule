@@ -8,6 +8,7 @@
         <result column="studentName" jdbcType="VARCHAR" property="studentname"/>
         <result column="collegeNo" jdbcType="VARCHAR" property="collegeno"/>
         <result column="classNo" jdbcType="INTEGER" property="classno"/>
+        <result column="role" jdbcType="INTEGER" property="role"/>
     </resultMap>
     <select id="selectAll" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.vo.QueryVO">
         SELECT
@@ -100,5 +101,9 @@
     </insert>
     <select id="getCount" resultType="java.lang.Integer">
           select count(id) from student_info;
+    </select>
+    <select id="findStudent"  resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from student_info
+        where studentNo=#{username} AND password=#{password}
     </select>
 </mapper>

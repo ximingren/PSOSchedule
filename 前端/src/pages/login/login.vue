@@ -6,15 +6,20 @@
                 <span class="svg-container svg-container_login">
                     <svg-icon icon-class="user" />
                 </span>
-                <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+                <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on"  />
             </el-form-item>
             <el-form-item prop="password">
                 <span class="svg-container">
                     <svg-icon icon-class="password"></svg-icon>
                 </span>
-                <el-input name="password" :type="pwdType" @keyup.enter.native="login" v-model="loginForm.password" autoComplete="on"
-                placeholder="password"></el-input>
+                <el-input name="password" :type="pwdType" @keyup.enter.native="login" v-model="loginForm.password" autoComplete="on"></el-input>
                 <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
+            </el-form-item>
+            <el-form-item>
+                <span class="svg-container">
+                </span>
+                <el-radio v-model="loginForm.loginType" label="1">学生</el-radio>
+                <el-radio v-model="loginForm.loginType" label="2">教师</el-radio>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="login">
@@ -45,8 +50,7 @@ export default {
         }
         return {
             loginForm: {
-                username: 'admin',
-                password: '123456'
+                loginType: '1'
             },
             loginRules: {
                 username: [
@@ -65,7 +69,8 @@ export default {
                 ]
             },
             loading: false,
-            pwdType: 'password'
+            pwdType: 'password',
+            loginType: '1'
         }
     },
     methods: {
@@ -183,5 +188,11 @@ $light_gray: #eee;
         color:#889aa4;
         padding-left:10px;
     }
+}
+.fr{
+    float:right;
+}
+.fl{
+    float:left;
 }
 </style>

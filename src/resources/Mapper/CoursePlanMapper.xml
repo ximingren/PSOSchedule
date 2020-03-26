@@ -93,6 +93,9 @@
         cli.className AS classNo,
         coi.courseName AS courseNo,
         tei.teacherName AS teacherNo,
+        cli.classNo AS classN,
+        coi.courseNo AS courseN,
+        tei.teacherNo AS teacherN,
         cop.classroomNo,
         cop.classTime,
         cop.weeksSum,
@@ -116,9 +119,9 @@
         order by cop.classTime
         )AS temp
         <if test="condition != null">
-            WHERE classNo LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
-            OR courseNo LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
-            OR teacherNo LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
+            WHERE classN LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
+            OR courseN LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
+            OR teacherN LIKE concat("%",#{condition,jdbcType=VARCHAR},"%")
         </if>
         <if test="pageParam != null">
             LIMIT #{pageParam.pageStart},#{pageParam.pageSize}

@@ -23,17 +23,7 @@
         </el-breadcrumb>
         <div class="aside__top--right">
             <div class="user-msg">
-                <img class="user-img" :src="avatar" alt="">
-                <span class="user-name">{{account}}</span>
-                <el-dropdown trigger="click" placement="top">
-                    <span class="el-dropdown-link">
-                        <i class="el-icon-arrow-down el-icon--right"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>个人中心</el-dropdown-item>
-                        <el-dropdown-item>修改密码</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+                <span class="user-name">{{username}}</span>
             </div>
             <div class="quit-system" @click="loginOut">
                 <span class="iconfont icon-quit"></span>
@@ -51,7 +41,7 @@ export default {
     },
     computed: {
         ...mapState(['isSidebarNavCollapse', 'crumbList']),
-        ...mapState('permission', ['avatar', 'account'])
+        ...mapState('permission', ['username', 'account'])
     },
     methods: {
         toggleNavCollapse() {

@@ -63,6 +63,7 @@
 </template>
 <script>
 import { getCoursePlan } from '@/api/course'
+import { mapState } from 'vuex'
 export default {
     data() {
         return {
@@ -78,12 +79,15 @@ export default {
             tempTable: []
         }
     },
+    computed: {
+        ...mapState('permission', ['account'])
+    },
     created() {
         this.initList()
     },
     methods: {
         async initList() {
-            var requestData = { 'condition': '计算机科学与技术1班' }
+            var requestData = { 'condition': this.account }
             var data = await getCoursePlan(requestData)
             data = data.data
             this.handleCourseData(data)

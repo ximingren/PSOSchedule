@@ -9,6 +9,7 @@
         <result column="collegeNo" jdbcType="VARCHAR" property="collegeno"/>
         <result column="age" jdbcType="INTEGER" property="age"/>
         <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="role" jdbcType="VARCHAR" property="role"/>
     </resultMap>
     <select id="selectAll" resultMap="BaseResultMap" parameterType="com.ximingren.CourseSchedule.Bean.vo.QueryVO">
         -- 先获取教师编号、教师名，学院名，年龄，职称
@@ -115,5 +116,9 @@
     </insert>
     <select id="getCount" resultType="java.lang.Integer">
           select count(id) from teacher_info;
+    </select>
+    <select id="findTeacher" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from teacher_info
+        where teacherNo=#{username} AND password=#{password}
     </select>
 </mapper>

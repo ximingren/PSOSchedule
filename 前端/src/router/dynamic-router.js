@@ -90,45 +90,45 @@ const dynamicRoutes = [
                 }
             }
         ]
-    },
-    {
-        path: '/permission',
-        component: Permission,
-        name: 'permission',
-        meta: {
-            name: '权限管理',
-            icon: 'table'
-        },
-        children: [
-            {
-                path: 'user',
-                name: 'user-manage',
-                component: UserManage,
-                meta: {
-                    name: '用户管理',
-                    icon: 'table'
-                }
-            },
-            {
-                path: 'role',
-                name: 'role-manage',
-                component: RoleManage,
-                meta: {
-                    name: '角色管理',
-                    icon: 'eye'
-                }
-            },
-            {
-                path: 'menu',
-                name: 'menu-manage',
-                component: MenuManage,
-                meta: {
-                    name: '菜单管理',
-                    icon: 'tree'
-                }
-            }
-        ]
     }
+    // {
+    //     path: '/permission',
+    //     component: Permission,
+    //     name: 'permission',
+    //     meta: {
+    //         name: '权限管理',
+    //         icon: 'table'
+    //     },
+    //     children: [
+    //         {
+    //             path: 'user',
+    //             name: 'user-manage',
+    //             component: UserManage,
+    //             meta: {
+    //                 name: '用户管理',
+    //                 icon: 'table'
+    //             }
+    //         },
+    //         {
+    //             path: 'role',
+    //             name: 'role-manage',
+    //             component: RoleManage,
+    //             meta: {
+    //                 name: '角色管理',
+    //                 icon: 'eye'
+    //             }
+    //         },
+    //         {
+    //             path: 'menu',
+    //             name: 'menu-manage',
+    //             component: MenuManage,
+    //             meta: {
+    //                 name: '菜单管理',
+    //                 icon: 'tree'
+    //             }
+    //         }
+    //     ]
+    // }
 ]
 
 export default dynamicRoutes

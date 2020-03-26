@@ -1,8 +1,10 @@
 package com.ximingren.CourseSchedule.Dao;
 
 import com.ximingren.CourseSchedule.Bean.po.StudentInfo;
+import com.ximingren.CourseSchedule.Bean.po.User;
 import com.ximingren.CourseSchedule.Bean.vo.QueryVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +23,6 @@ public interface StudentInfoDao {
 
     //获取数量
     int getCount();
+
+    StudentInfo findStudent(@Param("username") String username, @Param("password") String password);
 }
